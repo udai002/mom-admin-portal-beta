@@ -4,13 +4,14 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import { Route, Routes } from 'react-router'
 import Home from './pages/Home'
+import UserFeedback from './pages/Feedback/UserFeedback'
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
     <Routes>
-      <Route path='/' Component={Home} />
+      <Route path ='/' element={<UserFeedback /> }/>
     </Routes>
   )
 }
