@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { IoMenu } from "react-icons/io5";
 import { FaRegUserCircle } from "react-icons/fa";
 import { IoIosArrowForward } from "react-icons/io";
+import { useNavigate } from "react-router";
 
 const DashboardOptionsList = [
     {
@@ -24,7 +25,8 @@ const DashboardOptionsList = [
     },
     {
         id: 5,
-        title: "Delivery boys"
+        title: "Delivery boys",
+        link:"/deliveryboys"
     },
     {
         id: 6,
@@ -33,9 +35,17 @@ const DashboardOptionsList = [
 
 ]
 
-function OptionItems({ title, action }) {
+function OptionItems({ title, action , link  , setOpenBar}) {
+
+    const navigate = useNavigate()
+
+    function handleNavigation(){
+        setOpenBar(false)
+        navigate(link??"/")
+    }
+
     return <li>
-        <button className="p-2  border-b-2 border-gray-200 hover:bg-[#00a99d] ease-in duration-75 rounded-xl mt-4 w-full flex justify-between items-center">
+        <button className="p-2  border-b-2 border-gray-200 hover:bg-[#00a99d] ease-in duration-75 rounded-xl mt-4 w-full flex justify-between items-center" onClick={handleNavigation}>
             <p>{title}</p>
             <IoIosArrowForward />
         </button>
@@ -79,7 +89,7 @@ function SideBar() {
                         <p className="font-bold text-[#00a99d] text-2xl">mom portal</p>
                     </div>
                     <ul className="p-5">
-                        {DashboardOptionsList.map(item => <OptionItems title={item.title} />)}
+                        {DashboardOptionsList.map(item => <OptionItems title={item.title} link={item.link} setOpenBar={setOpenBar} />)}
                     </ul>
                 </div>
             </motion.div>

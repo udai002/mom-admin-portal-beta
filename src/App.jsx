@@ -5,15 +5,21 @@ import './App.css'
 import { Route, Routes } from 'react-router'
 import Home from './pages/Home'
 import Login from './pages/Login/Login'
+import DeliveryBoyDetails from './pages/Deliveryboy/Deliverboy'
+import SideBar from './components/Sidebar/SideBar'
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
+    <>
+    <SideBar/>
     <Routes>
       <Route path='/' Component={Home} />
       <Route path='/login' Component={Login} />
+      <Route path='/deliveryboys' Component={DeliveryBoyDetails} />
     </Routes>
+    </>
   )
 }
 
