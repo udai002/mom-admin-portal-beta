@@ -4,14 +4,14 @@ import viteLogo from '/vite.svg'
 import './App.css'
 import { Route, Routes } from 'react-router'
 import Home from './pages/Home'
-import { Dashboard } from './pages/Dashboard/Dashboard'
+import Orders from './pages/Orders/orders'
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
     <Routes>
-      <Route path='/' Component={Dashboard} />
+      <Route path='/' Component={Orders} />
     </Routes>
   )
 }
