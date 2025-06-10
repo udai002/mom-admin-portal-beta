@@ -1,12 +1,23 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 
 function MyComponent() {
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  // const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [formData, setFormData] = useState({
-    name: '',
-    category: '',
-    description: ''
+    category_name: '',
+ 
   });
+  const {id} = useParams();
+  const navigate = useNavigate();
+
+  useEffect(()=>{
+    if(id){
+            fetch(`http://localhost:3000/api/medicines/categories/${id}`)
+        .then(res => res.json())
+        .then(data => setFormData({ category_name: data.category_name }))
+        .catch(() => {});
+    }
+  },[id])
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -16,9 +27,27 @@ function MyComponent() {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
+   try {
+    const response = await fetch('http://localhost:3000/api/medicines/categories', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(formData),
+    });
+    if (response.ok) {
+      const data = await response.json();
+      console.log('Category created:', data);
+
+      setFormData({ category_name:'' });
+    } else {
+      console.error('Failed to create category');
+    }
+  } catch (error) {
+    console.error('Error:', error);
+  }
   
   };
 
@@ -39,8 +68,8 @@ function MyComponent() {
                   <label className="leading-loose">Category Name</label>
                   <input
                     type="text"
-                    name="name"
-                    value={formData.name}
+                    name="category_name"
+                    value={formData.category_name}
                     onChange={handleChange}
                     className="px-4 py-2 border focus:ring-gray-500 focus:border-gray-900 w-full sm:text-sm border-gray-300 rounded-md focus:outline-none text-gray-600"
                     placeholder="Enter category name"
@@ -52,9 +81,11 @@ function MyComponent() {
               <div className="pt-4 flex items-center space-x-4">
                
                 <button
-                  type="submit"
+                  // type="submit"
+                  
                   className="bg-green-500 flex justify-center items-center w-full text-white px-4 py-3 rounded-md focus:outline-none "
-                >
+                  type="submit">{id ? 'Update' : 'Create'}
+                
                   Create Category
                 </button>
               </div>
