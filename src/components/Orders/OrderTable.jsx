@@ -33,13 +33,14 @@ function OrdersTable() {
   }, []);
 
   return (
-    <div className="p-6 min-h-screen bg-gray-100">
+    <div className='w-[70%] mx-auto my-6'>
+    <div className="p-6 min-h-screen">
       <h2 className="text-xl font-bold mb-4">Order List</h2>
 
       {loading ? (
         <p>Loading...</p>
       ) : (
-        <div className="overflow-x-auto w-2/3">
+        <div className="overflow-x-auto w-[110%] border-1 border-[#00A99D] rounded-2xl">
           <table className="min-w-full bg-[#D5ECE9] rounded-2xl shadow border-collapse">
             <thead>
               <tr className="text-black uppercase text-sm">
@@ -87,6 +88,7 @@ function OrdersTable() {
           </table>
         </div>
       )}
+    </div>
     </div>
   );
 }

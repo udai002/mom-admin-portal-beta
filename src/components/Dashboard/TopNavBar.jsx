@@ -5,7 +5,7 @@ import order from '../../assets/Dashboard/order.png'
 import delivery from '../../assets/Dashboard/delivery.png'
 const TopNavBar = () => {
   return (
-    <div class='p-6 m-2 rounded-lg shadow-md flex bg-[#00a99d] text-[#fff] w-1/2 justify-between'>
+    <div class='p-6 m-2 rounded-lg shadow-md flex bg-[#00a99d] text-[#fff] w-[70%] justify-between mx-auto my-6'>
         <div class='flex items-center space-x-4'>
             <img src={user} alt='User-icon' height={50} width={50}/>
             <div>
