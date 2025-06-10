@@ -55,7 +55,7 @@ const UserFeedbackTable = () => {
         See What Our Users Are Saying
       </div>
       <div className="overflow-x-auto mt-6 justify-content-center">
-        <table className="min-w-1/2 border-2 border-[#00A99D] rounded-3xl overflow-hidden bg-[#00A99D]">
+        <table className="min-w-1/2 border-2 border-[#00A99D] rounded-3xl overflow-hidden bg-[#00A99D] mx-auto my-6">
           <thead className="bg-[#C2ECE8] text-[#333]">
             <tr>
               <th className="border px-4 py-2 text-left">S.No</th>
