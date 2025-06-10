@@ -25,7 +25,9 @@ export default function PolarChart() {
     const fetchRevenue = async () => {
       try {
         setLoading(true);
+        
         const res = await axios.get(`http://localhost:3000/api/rev?range=${range}`);
+
         if (Array.isArray(res.data?.data)) {
           setRevenueData(res.data.data);
         } else {
