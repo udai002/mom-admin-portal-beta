@@ -13,6 +13,7 @@ export default function SalesChart() {
     const fetchSales = async () => {
       try {
         const res = await axios.get("http://localhost:3000/api/sales");
+        
         if (Array.isArray(res.data?.data)) {
           setSalesData(res.data.data);
         }
@@ -102,7 +103,6 @@ export default function SalesChart() {
       },
     },
   };
-
   return (
     <div className="w-full h-80 bg-[#d5ece9] p-4 rounded-lg shadow-md transition-transform duration-300 transform hover:scale-[1.02] hover:shadow-xl">
       {loading ? (

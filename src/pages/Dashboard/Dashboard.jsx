@@ -4,6 +4,7 @@
   import Sales from '../../components/Dashboard/Sales';
   import PolarChart from '../../components/Dashboard/Polar';
   import '../../index.css';
+
   export const Dashboard = () => {
     const [stats, setStats] = useState({ users: 0, revenue: 0, orders: 0, deliveryBoys: 0 });
     const [loading, setLoading] = useState(true);
