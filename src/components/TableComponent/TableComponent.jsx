@@ -1,0 +1,62 @@
+import * as React from 'react';
+import {
+  Paper, Table, TableBody, TableCell, TableContainer,
+  TableHead, TablePagination, TableRow
+} from '@mui/material';
+
+export default function ReusableTable({ columns, rows, rowsPerPageOptions = [10, 25, 100] }) {
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(rowsPerPageOptions[0]);
+
+  const handleChangePage = (event, newPage) => setPage(newPage);
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
+
+  return (
+    <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+      <TableContainer sx={{ maxHeight: 440 }}>
+        <Table stickyHeader>
+          <TableHead>
+            <TableRow>
+              {columns.map((column) => (
+                <TableCell
+                  key={column.id}
+                  align={column.align || 'left'}
+                  style={{ minWidth: column.minWidth, backgroundColor: '#00a99d' }}
+                >
+                  {column.label}
+                </TableCell>
+              ))}
+            </TableRow>
+          </TableHead>
+
+          <TableBody>
+            {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, idx) => (
+              <TableRow hover key={idx}>
+                {columns.map((column) => (
+                  <TableCell key={column.id} align={column.align || 'left'}>
+                    {column.format && typeof row[column.id] === 'number'
+                      ? column.format(row[column.id])
+                      : row[column.id]}
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      <TablePagination
+        rowsPerPageOptions={rowsPerPageOptions}
+        component="div"
+        count={rows.length}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+      />
+    </Paper>
+  );
+}

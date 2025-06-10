@@ -1,18 +1,19 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
 import { Route, Routes } from 'react-router'
-import Home from './pages/Home'
-import CustomizedTables from './components/customisedtable'
+import CustomizedTables from './components/customisedtable';
+import MedicinesCategory from './pages/MedicinesCategory'
+import Category from './pages/Categores/CustomizedTables'
+import SubCategory from './pages/Categores/sub'
+
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
     <Routes>
       <Route path='/' Component={CustomizedTables} />
-      
+      <Route path='/medicines' Component={MedicinesCategory} />
+      <Route path='/category' Component={Category} />
+      <Route path='/subCategory' Component={SubCategory} />
+
     </Routes>
   )
 }
