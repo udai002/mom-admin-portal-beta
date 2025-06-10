@@ -1,27 +1,9 @@
 import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { Line } from "react-chartjs-2";
-import {
-  Chart as ChartJS,
-  LineElement,
-  PointElement,
-  CategoryScale,
-  LinearScale,
-  Tooltip,
-  Legend,
-} from "chart.js";
+import {Chart as ChartJS,LineElement,PointElement,CategoryScale,LinearScale,Tooltip,Legend,} from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
-
-ChartJS.register(
-  LineElement,
-  PointElement,
-  CategoryScale,
-  LinearScale,
-  Tooltip,
-  Legend,
-  ChartDataLabels
-);
-
+ChartJS.register(LineElement,PointElement,CategoryScale,LinearScale,Tooltip,Legend,ChartDataLabels);
 export default function SalesChart() {
   const chartRef = useRef(null);
   const [salesData, setSalesData] = useState([]);

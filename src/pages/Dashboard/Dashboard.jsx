@@ -4,18 +4,15 @@
   import Sales from '../../components/Dashboard/Sales';
   import PolarChart from '../../components/Dashboard/Polar';
   import '../../index.css';
-
   export const Dashboard = () => {
     const [stats, setStats] = useState({ users: 0, revenue: 0, orders: 0, deliveryBoys: 0 });
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
-
     useEffect(() => {
       const fetchStats = async () => {
         setError('');
         setLoading(true);
         const newStats = { users: 0, revenue: 0, orders: 0, deliveryBoys: 0 };
-
         try {
           const res = await fetch('http://localhost:3000/api/user/users');
           const data = await res.json();
@@ -24,7 +21,6 @@
           console.error('Failed to fetch users:', err);
           setError('Failed to fetch users');
         }
-
         try {
           const res = await fetch('http://localhost:3000/api/revenue');
           const data = await res.json();
@@ -33,7 +29,6 @@
           console.error('Failed to fetch revenue:', err);
           setError('Failed to fetch revenue');
         }
-
         try {
           const res = await fetch('http://localhost:3000/api/all');
           const data = await res.json();
@@ -42,7 +37,6 @@
           console.error('Failed to fetch orders:', err);
           setError('Failed to fetch orders');
         }
-
         try {
           const res = await fetch('http://localhost:3000/delivery/alldelivery');
           const data = await res.json();
@@ -51,7 +45,6 @@
           console.error('Failed to fetch delivery boys:', err);
           setError('Failed to fetch delivery boys');
         }
-
         setStats(newStats);
         setLoading(false);
       };

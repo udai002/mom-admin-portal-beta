@@ -6,12 +6,9 @@ import {
   Legend,
 } from "chart.js";
 import { useEffect, useState } from "react";
-
 ChartJS.register(ArcElement, Tooltip, Legend);
-
 export default function PieChart() {
   const [deliveryData, setDeliveryData] = useState({ active: 0, inactive: 0 });
-
   useEffect(() => {
   const fetchDeliveryStatus = async () => {
     try {
@@ -30,8 +27,6 @@ export default function PieChart() {
 
   fetchDeliveryStatus();
 }, []);
-
-
   const data = {
     labels: ["Active", "Inactive"],
     datasets: [
@@ -44,6 +39,5 @@ export default function PieChart() {
       },
     ],
   };
-
   return <Pie data={data} />;
 }

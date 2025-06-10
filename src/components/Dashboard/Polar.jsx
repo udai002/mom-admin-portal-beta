@@ -14,25 +14,13 @@ import {
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import { saveAs } from "file-saver";
 import Papa from "papaparse";
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Tooltip,
-  Legend,
-  Filler,
-  ChartDataLabels
-);
-
+ChartJS.register(CategoryScale,LinearScale,PointElement,LineElement,Tooltip,Legend,Filler,ChartDataLabels);
 export default function PolarChart() {
   const chartRef = useRef(null);
   const [gradient, setGradient] = useState(null);
   const [revenueData, setRevenueData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [range, setRange] = useState("this-month");
-
   useEffect(() => {
     const fetchRevenue = async () => {
       try {
@@ -49,7 +37,6 @@ export default function PolarChart() {
         setLoading(false);
       }
     };
-
     fetchRevenue();
   }, [range]);
 

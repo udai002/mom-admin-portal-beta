@@ -3,7 +3,6 @@ import user from '../../assets/Dashboard/fa--users.png';
 import dollar from '../../assets/Dashboard/dollar.png';
 import order from '../../assets/Dashboard/order.png';
 import delivery from '../../assets/Dashboard/delivery.png';
-
 const TopNavBar = ({ stats }) => (
   <div className="p-6 m-2 rounded-lg shadow-md flex bg-[#00a99d] text-white w-1/2 flex-wrap gap-4">
     <StatCard icon={user} label="Total Users" value={stats.users} />
@@ -12,7 +11,6 @@ const TopNavBar = ({ stats }) => (
     <StatCard icon={delivery} label="Total Boys" value={stats.deliveryBoys} />
   </div>
 );
-
 const StatCard = ({ icon, label, value }) => (
   <div className="flex items-center space-x-4 min-w-[160px]">
     <img src={icon} alt={label} className="h-12 w-12" />
@@ -22,5 +20,4 @@ const StatCard = ({ icon, label, value }) => (
     </div>
   </div>
 );
-
 export default TopNavBar;
