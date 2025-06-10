@@ -87,7 +87,7 @@ export default function StickyHeadTable() {
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch('http://localhost:3000/api/user/');
+        const response = await fetch('http://localhost:3000/api/user/all');
         const json = await response.json();
         console.log('API Response:', json);
 
