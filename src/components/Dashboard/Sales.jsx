@@ -1,4 +1,5 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
+import axios from "axios";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -9,41 +10,69 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
+import ChartDataLabels from "chartjs-plugin-datalabels";
 
-ChartJS.register(LineElement, PointElement, CategoryScale, LinearScale, Tooltip, Legend);
+ChartJS.register(
+  LineElement,
+  PointElement,
+  CategoryScale,
+  LinearScale,
+  Tooltip,
+  Legend,
+  ChartDataLabels
+);
 
-export default function Sales() {
+export default function SalesChart() {
   const chartRef = useRef(null);
-  const [gradient, setGradient] = useState(null);
+  const [salesData, setSalesData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!chartRef.current) return;
-    const ctx = chartRef.current.ctx;
-    const gradientFill = ctx.createLinearGradient(0, 0, 0, ctx.canvas.height);
-    gradientFill.addColorStop(0, "rgba(255, 255, 255, 0.6)");
-    gradientFill.addColorStop(1, "rgba(213, 236, 233, 0.3)");
-    setGradient(gradientFill);
+    const fetchSales = async () => {
+      try {
+        const res = await axios.get("http://localhost:3000/api/sales");
+        if (Array.isArray(res.data?.data)) {
+          setSalesData(res.data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching sales data", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSales();
   }, []);
 
+  const labels = salesData.map((item) => item.month);
+  const values = salesData.map((item) => item.sales);
+
   const data = {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May"],
+    labels,
     datasets: [
       {
-        label: "Sales",
-        data: [1000, 1500, 2000, 1800, 2100],
+        label: "Sales (Orders)",
+        data: values,
         borderColor: "#00a99d",
-        backgroundColor: gradient || "rgba(255, 255, 255, 0.3)",
+        backgroundColor: "rgba(0,169,157,0.1)",
         fill: true,
-        tension: 0.3,
-        pointRadius: 6,
-        pointHoverRadius: 10,
-        pointBackgroundColor: "#ffffff",
-        pointBorderColor: "#00a99d",
+        tension: 0.4,
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        pointBackgroundColor: "#00a99d",
+        pointBorderColor: "#fff",
         pointBorderWidth: 2,
-        pointHoverBackgroundColor: "#00a99d",
-        pointHoverBorderColor: "#ffffff",
         borderWidth: 3,
-        hoverBorderWidth: 4,
+        datalabels: {
+          anchor: "end",
+          align: "top",
+          color: "#333",
+          font: {
+            size: 12,
+            weight: "bold",
+          },
+          formatter: (value) => value.toLocaleString(),
+        },
       },
     ],
   };
@@ -51,67 +80,54 @@ export default function Sales() {
   const options = {
     responsive: true,
     maintainAspectRatio: false,
-    animation: {
-      duration: 1200,
-      easing: "easeOutQuart",
-    },
     plugins: {
       legend: {
+        position: "top",
         labels: {
           color: "#00a99d",
-          font: { size: 16, weight: "bold" },
+          font: { size: 14, weight: "bold" },
         },
       },
       tooltip: {
         enabled: true,
         backgroundColor: "#00a99d",
-        titleColor: "#ffffff",
+        titleColor: "#fff",
         bodyColor: "#d5ece9",
         cornerRadius: 8,
         padding: 12,
         displayColors: false,
-        mode: "nearest",
-        intersect: false,
-        animation: {
-          duration: 300,
-          easing: "easeOutQuart",
-        },
       },
-    },
-    interaction: {
-      mode: "nearest",
-      intersect: false,
+      datalabels: {
+        display: true,
+      },
     },
     scales: {
       x: {
         ticks: {
-          color: "#000000",
-          font: { size: 14 },
+          color: "#333",
+          font: { size: 13 },
         },
-        grid: {
-          display: false,
-          color:"#00a99d"
-        },
+        grid: { display: false },
       },
       y: {
-        ticks: {
-          color: "#000000",
-          font: { size: 14 },
-        },
-        grid: {
-        //   color: "rgba(213, 236, 233, 0.3)",
-        color:"#00a99d",
-        },
         beginAtZero: true,
+        ticks: {
+          color: "#333",
+          font: { size: 13 },
+          callback: (value) => value.toLocaleString(),
+        },
+        grid: { color: "rgba(0,0,0,0.05)" },
       },
     },
   };
 
   return (
-    <div
-      className="w-full h-80 rounded-lg cursor-pointer bg-[#d5ece9] p-4 shadow-md transform transition-transform duration-300 hover:scale-[1.04] hover:shadow-xl"
-    >
-      <Line ref={chartRef} data={data} options={options} />
+    <div className="w-full h-80 bg-[#d5ece9] p-4 rounded-lg shadow-md transition-transform duration-300 transform hover:scale-[1.02] hover:shadow-xl">
+      {loading ? (
+        <p className="text-center text-gray-600">Loading sales chart...</p>
+      ) : (
+        <Line ref={chartRef} data={data} options={options} />
+      )}
     </div>
   );
 }
