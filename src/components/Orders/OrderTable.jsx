@@ -1,16 +1,10 @@
 import React, {useEffect,useState} from 'react';
-
-// const orders = [
-//   { id: '001', customer: 'Alice', product: 'Laptop', date: '2025-06-01', status: 'Completed', payment: 'Paid' },
-//   { id: '002', customer: 'Bob', product: 'Smartphone', date: '2025-06-03', status: 'Active', payment: 'Pending' },
-//   { id: '003', customer: 'Charlie', product: 'Headphones', date: '2025-06-04', status: 'Completed', payment: 'Paid' },
-//   { id: '004', customer: 'Diana', product: 'Monitor', date: '2025-06-05', status: 'Cancelled', payment: 'Refunded' },
-// ];
-
+import { useNavigate } from 'react-router-dom';
 
 function OrdersTable() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -32,6 +26,14 @@ function OrdersTable() {
     return () => clearInterval(interval);
   }, []);
 
+    const sortedOrders = [...orders].sort((a,b) => {
+      if (a.status === 'on the way' && b.status !=='on the way') return -1;
+      if (a.status !=='on the way' && b.status ==='on the way') return 1;
+      if (b.status ==='delivered' && b.status !=='delivered') return 1;
+      if (b.status !=='delivered' && b.status ==='delivered') return -1;
+      return 0;
+    })
+
   return (
     <div className='w-[70%] mx-auto my-6'>
     <div className="p-6 min-h-screen">
@@ -45,7 +47,6 @@ function OrdersTable() {
             <thead>
               <tr className="text-black uppercase text-sm">
                 <th className="py-3 px-6 text-left">OrderId</th>
-                
                 <th className="py-3 px-6 text-left">Customer</th>
                 <th className="py-3 px-6 text-left">Healporter</th>
                 <th className="py-3 px-6 text-left">Date</th>
@@ -56,7 +57,7 @@ function OrdersTable() {
               </tr>
             </thead>
             <tbody className="text-gray-600 text-sm font-light">
-              {orders.map((order) => (
+              {sortedOrders.map((order) => (
                 <tr key={order._id} className="border-b border-[#00A99D]">
                 
                   <td className="py-3 px-6 text-left whitespace-nowrap">{order?.orderId || 'N/A'}</td>
@@ -80,7 +81,12 @@ function OrdersTable() {
                   </td>
                   
                   <td className="py-3 px-6 text-center">
-                    <button className="text-blue-600 hover:underline">View</button>
+                    {order?.orderId ? (
+                    <button onClick={()=> navigate(`/orders/${order.orderId}`)}
+                    className="text-blue-600 hover:underline">View</button>
+                    ) : (
+                      <span className='text-gray-500'>No Details</span>
+                    )}
                   </td>
                 </tr>
               ))}
