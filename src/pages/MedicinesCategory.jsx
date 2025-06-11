@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+// import Swal from 'sweetalert2'
+import DeleteAlert from '../components/Medicines/Deletealert';
 
 const PaginatedTable = () => {
   const Navigate = useNavigate();
@@ -16,6 +18,25 @@ const PaginatedTable = () => {
     setCurrentPage(page);
   };
 
+const handleDelete = async (id) => {
+  const confirmDelete = await DeleteAlert()
+  if (!confirmDelete) {
+    return;
+  }
+
+
+    try {
+      await fetch(`http://localhost:3000/api/medicines/medicines/${id}`, {
+        method: 'DELETE',
+      });
+
+      const updatedData = data.filter(item => item._id !== id);
+      setData(updatedData);
+      setFilteredData(updatedData);
+    } catch (error) {
+      console.error('Error deleting medicine:', error);
+    }
+  };
   useEffect(() => {
     const fetchMedicines = async () => {
       try {
@@ -34,7 +55,7 @@ const PaginatedTable = () => {
     fetchMedicines();
   }, []);
 
-  
+   
 
   const handleSearch = (event) => {
     const value = event.target.value.toLowerCase();
@@ -49,7 +70,10 @@ const PaginatedTable = () => {
   };
 
   return (
+    
     <div className="p-6 bg-gray-100 min-h-screen">
+      <div className='text-center ml-130 text-xl font-bold bg-[#00a99d] h-15 w-100 pt-4 text-white rounded-lg shadow-lg mb-6'>
+        <h1>Medicine Details</h1></div>
       <div className="flex justify-between items-center mb-6 mt-2">
         <input
           type="text"
@@ -66,7 +90,7 @@ const PaginatedTable = () => {
         </button>
       </div>
 
-      <div className="overflow-x-auto shadow-lg rounded-xl bg-white">
+      <div className="overflow-x-auto shadow-lg rounded-xl bg-[#D5ECE9] hover:bg-[#00a99d]-50">
         <table className="min-w-full text-sm text-left">
           <thead className="sticky top-0 bg-teal-600 text-white text-xs uppercase tracking-wider">
             <tr>
@@ -96,7 +120,7 @@ const PaginatedTable = () => {
           </thead>
           <tbody className="divide-y divide-gray-200">
             {currentItems?.map((item) => (
-              <tr key={item._id} className="hover:bg-gray-50 transition">
+              <tr key={item._id} className="hover:bg-[#b1e6e2] transition">
                 <td className="px-4 py-2">
                   <img
                     src={item?.imageUrl}
@@ -144,7 +168,7 @@ const PaginatedTable = () => {
                     Edit
                   </button>
                    <button
-                    className="text-teal-600 hover:text-teal-800 font-semibold" >Delete</button>
+                    className="text-teal-600 hover:text-teal-800 font-semibold " onClick={() => handleDelete(item._id)} >Delete</button>
                 </td>
                 
               </tr>
@@ -174,6 +198,7 @@ const PaginatedTable = () => {
       </div>
     </div>
   );
-};
+}
+
 
 export default PaginatedTable;
