@@ -12,7 +12,7 @@ export function MedicineProvider({ children }) {
         Object.entries(newMedicine).forEach(([key, value]) => {
           
             if (key === 'imageFile' && value) {
-                formData.append('image', value);
+                formData.append('imageUrl', value);
             } else if (key !== 'imageUrl') {
                 formData.append(key, value);
             }

@@ -70,10 +70,15 @@ function SubCategories() {
     try {
       let url = "http://localhost:3000/api/medicines/subcategories";
       if (id) {
-        url = `http://localhost:3000/api/medicines/categories/${id}`;
+      
+        url = `http://localhost:3000/api/medicines/subcategories?categoryId=${id}`;
       }
       const res = await fetch(url);
-      const data = await res.json();
+      let data = await res.json();
+    
+      if (!Array.isArray(data)) {
+        data = [];
+      }
       if (res.ok) {
         setSubCategories(data);
         setFilteredSubCategories(data);

@@ -250,7 +250,7 @@ const handleFilterChange = async (e) => {
                 <td className="px-4 py-2">{item?.discount}</td>
                 <td className=" flex justify-between px-4 py-2">
                   <button
-                    onClick={() => Navigate(`/medicineform/${item._id}`)}
+                    onClick={() => Navigate(`/Updatedform/${item._id}`)}
                     className="text-teal-600 hover:text-teal-800 font-semibold mr-2"
                   >
                     Edit

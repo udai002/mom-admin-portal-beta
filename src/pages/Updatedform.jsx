@@ -1,27 +1,12 @@
 import React, { useState } from 'react';
-import useMedicine from '../../context/MedicineContext/Medicine';
 
-function MyForm() {
+
+function UpdateForm({ initialData, onUpdate, onCancel }) {
     const [formData, setFormData] = useState({
-        imageUrl: '',
-        
-        medicine_name: '',
-        price: '',
-        prescriptionDrug: false,
-        description: '',
-        use: '',
-        ingredients: '',
-        dose: '',
-        manufacturer: '',
-        notFor: '',
-        sideEffects: '',
-        store: '',
-        expiryDate: '',
-        manufactureDate: '',
-        subCategory: ["681f32424863d05779fb5bac"]
+        ...initialData,
+        imageFile: null,
+        imageUrl: initialData.imageUrl || ''
     });
-
-    const { addMedicine } = useMedicine();
 
     const handleChange = (event) => {
         const { name, value, type, checked, files } = event.target;
@@ -36,7 +21,7 @@ function MyForm() {
                 setFormData(prevData => ({
                     ...prevData,
                     imageFile: file,
-                    imageUrl: URL.createObjectURL(file) 
+                    imageUrl: URL.createObjectURL(file)
                 }));
             }
         } else {
@@ -47,35 +32,42 @@ function MyForm() {
         }
     };
 
+    const handleEdit = async (id) => {
+        try {
+            const formDataToSend = new FormData();
+            Object.entries(formData).forEach(([key, value]) => {
+                if (key === 'imageFile' && value) {
+                    formDataToSend.append('imageUrl', value);
+                } else if (key !== 'imageUrl' && value !== undefined && value !== null) {
+                    formDataToSend.append(key, value);
+                }
+            });
+
+            const response = await fetch(`http://localhost:3000/api/medicines/medicines/${id}`, {
+                method: 'PUT',
+                body: formDataToSend
+            });
+
+            if (response.ok) {
+                const updated = await response.json();
+                if (onUpdate) onUpdate(updated);
+                alert("Medicine updated successfully!");
+            } else {
+                alert("Failed to update medicine");
+            }
+        } catch (error) {
+            alert("Error updating medicine");
+        }
+    };
+
     const handleSubmit = (event) => {
         event.preventDefault();
-        addMedicine(formData).then((res) => {
-            if (res) {
-                setFormData({
-                    imageUrl: '',
-                
-                    medicine_name: '',
-                    price: '',
-                    prescriptionDrug: false,
-                    description: '',
-                    use: '',
-                    ingredients: '',
-                    dose: '',
-                    manufacturer: '',
-                    notFor: '',
-                    sideEffects: '',
-                    store: '',
-                    expiryDate: '',
-                    manufactureDate: '',
-                    subCategory: ["681f32424863d05779fb5bac"]
-                });
-            }
-        });
+        handleEdit(formData._id);
     };
 
     return (
         <div className="container mx-auto p-4 my-5 bg-white-800 rounded-lg shadow-md">
-            <h2 className="text-2xl font-bold mb-4 text-teal-700">Add Medicine</h2>
+            <h2 className="text-2xl font-bold mb-4 text-teal-700">Update Medicine</h2>
             <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
 
                 <div className="col-span-1 md:col-span-2">
@@ -254,17 +246,26 @@ function MyForm() {
                     />
                 </div>
 
-                <div className="col-span-1 md:col-span-2">
+                <div className="col-span-1 md:col-span-2 flex gap-4">
                     <button
                         type="submit"
                         className="bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                     >
-                        Submit
+                        Update
                     </button>
+                    {onCancel && (
+                        <button
+                            type="button"
+                            onClick={onCancel}
+                            className="bg-gray-400 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                        >
+                            Cancel
+                        </button>
+                    )}
                 </div>
             </form>
         </div>
     );
 }
 
-export default MyForm;
+export default UpdateForm;
