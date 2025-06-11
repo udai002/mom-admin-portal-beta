@@ -23,7 +23,7 @@
           setError('Failed to fetch users');
         }
         try {
-          const res = await fetch('http://localhost:3000/api/revenue');
+          const res = await fetch('http://localhost:3000/api/orderrevenue');
           const data = await res.json();
           newStats.revenue = data.totalRevenue || 0;
         } catch (err) {
@@ -59,7 +59,7 @@
       <>
         {loading && <div className="text-center p-4">Loading stats...</div>}
         {error && <div className="text-center text-red-600 p-4">{error}</div>}
-        {!loading && !error && <TopNavBar stats={stats} />}
+        {!loading && !error && <div className='flex justify-center'><TopNavBar stats={stats} /></div>}
 
         <div className="min-h-screen px-6 py-10 bg-[#f3fdfc] space-y-10">
           <div className="flex flex-col lg:flex-row gap-6">

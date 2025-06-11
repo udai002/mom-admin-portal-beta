@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import CalenderSymbol from '../../assets/calendar.png';
 import SearchSymbol from '../../assets/Search.png';
+import { useNavigate } from 'react-router-dom';
 
 function UserFeedback() {
+  const navigate = useNavigate();
   const [Details, setDetails] = useState([]);
   const [filteredDetails, setFilteredDetails] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,11 +22,13 @@ function UserFeedback() {
         let suggestions = Array.isArray(data) ? data : data.Details || [];
 
         const resolvedIds = JSON.parse(localStorage.getItem('resolvedSuggestions')) || [];
-        suggestions = suggestions.map(item =>
-          resolvedIds.includes(item._id)
-            ? { ...item, status: 'resolved' }
-            : item
-        );
+        suggestions = suggestions.map(item => {
+          const isResolved = resolvedIds.includes(item._id);
+          return {
+            ...item,
+            status: isResolved ? 'resolved' : 'pending'
+          };
+        });
 
         setDetails(suggestions);
         setFilteredDetails(suggestions);
@@ -39,8 +43,16 @@ function UserFeedback() {
     fetchDetails();
   }, []);
 
+  const sortedDetails = [...Details].sort((a, b) => {
+    if (a.status === 'resolved' && b.status !== 'resolved') return 1;
+    if (a.status !== 'resolved' && b.status === 'resolved') return -1;
+    if (b.status === 'pending' && a.status !== 'pending') return -1;
+    if (b.status !== 'pending' && a.status === 'pending') return 1;
+    return 0;
+  });
+
   useEffect(() => {
-    let filtered = [...Details];
+    let filtered = [...sortedDetails];
 
     if (search.trim()) {
       filtered = filtered.filter(item =>
@@ -53,12 +65,14 @@ function UserFeedback() {
       filtered = filtered.filter(item => item.isTechnical);
     } else if (filterType === 'Non-Technical') {
       filtered = filtered.filter(item => item.isNonTechincal);
+    } else if (filterType === 'Product') {
+      filtered = filtered.filter(item => item.isProduct);
     }
 
-    if (selectedDate) {
-      const selected = new Date(selectedDate).toLocaleDateString();
-      filtered = filtered.filter(item => new Date(item.createdAt).toLocaleDateString() === selected);
-    }
+    // if (selectedDate) {
+    //   const selected = new Date(selectedDate).toLocaleDateString();
+    //   filtered = filtered.filter(item => new Date(item.createdAt).toLocaleDateString() === selected);
+    // }
 
     setFilteredDetails(filtered);
   }, [search, filterType, selectedDate, Details]);
@@ -75,23 +89,22 @@ function UserFeedback() {
       : 'bg-gray-400 text-white px-4 py-1 rounded cursor-not-allowed';
   };
 
-  const handleResolve = (index, id) => {
-    const updated = [...filteredDetails];
-    updated[index].status = 'resolved';
-    setFilteredDetails(updated);
-
-    const resolvedIds = JSON.parse(localStorage.getItem('resolvedSuggestions')) || [];
-    if (!resolvedIds.includes(id)) {
-      resolvedIds.push(id);
+  const handleResolveClick = (row) => {
+    const resolvedIds = JSON.parse(localStorage.getItem('resolvedSuggestions') || '[]');
+    
+    if (!resolvedIds.includes(row._id)) {
+      resolvedIds.push(row._id);
       localStorage.setItem('resolvedSuggestions', JSON.stringify(resolvedIds));
     }
 
-    const allUpdated = [...Details];
-    const i = allUpdated.findIndex(item => item._id === id);
-    if (i !== -1) {
-      allUpdated[i].status = 'resolved';
-      setDetails(allUpdated);
+    const updated = [...Details];
+    const index = updated.findIndex(item => item._id === row._id);
+    if (index !== -1) {
+      updated[index].status = 'resolved';
+      setDetails(updated);
     }
+    
+    navigate(`/ResolveDetail/${row._id}/${encodeURIComponent(row.userId?.name || 'N/A')}/${encodeURIComponent(row.userId?.email || 'N/A')}/${encodeURIComponent(row.suggestionType || 'N/A')}/${encodeURIComponent(row.createdAt || 'N/A')}/${encodeURIComponent(row.suggestion || 'N/A')}`);
   };
 
   return (
@@ -101,7 +114,7 @@ function UserFeedback() {
       </div>
 
       <div className="flex flex-wrap gap-4 items-center my-6">
-        <div className="flex gap-4 flex-wrap">
+        {/* <div className="flex gap-4 flex-wrap">
           <div className="border border-teal-500 rounded-lg px-2 py-2 flex items-center gap-2 bg-[#D5ECE9]">
             <img src={SearchSymbol} alt="Search" className="w-5 h-5" />
             <input
@@ -122,13 +135,21 @@ function UserFeedback() {
               className="outline-none bg-transparent"
             />
           </div>
-        </div>
+        </div> */}
 
-        <div className="border border-teal-500 rounded-lg px-4 py-2 flex gap-2 items-center ml-auto bg-[#D5ECE9]">
-          <label>Feedback Type:</label>
-          <label><input type="radio" checked={filterType === 'Technical'} onChange={() => setFilterType('Technical')} /> Technical</label>
-          <label><input type="radio" checked={filterType === 'Non-Technical'} onChange={() => setFilterType('Non-Technical')} /> Non-Technical</label>
-          <label><input type="radio" checked={filterType === 'All'} onChange={() => setFilterType('All')} /> All</label>
+        {/* Dropdown instead of radio buttons */}
+        <div className="ml-auto border border-teal-500 rounded-lg px-4 py-2 bg-[#D5ECE9]">
+          <label className="mr-2 font-medium">Feedback Type:</label>
+          <select
+            value={filterType}
+            onChange={(e) => setFilterType(e.target.value)}
+            className="bg-[#D5ECE9] outline-none px-2 py-1 rounded"
+          >
+            <option value="All">All</option>
+            <option value="Technical">Technical</option>
+            <option value="Non-Technical">Non-Technical</option>
+            <option value="Product">Product</option>
+          </select>
         </div>
       </div>
 
@@ -147,7 +168,13 @@ function UserFeedback() {
             </tr>
           </thead>
           <tbody>
-            {filteredDetails.length > 0 ? (
+            {loading ? (
+              <tr>
+                <td colSpan="8" className="px-4 py-6 text-center text-gray-500">
+                  Loading...
+                </td>
+              </tr>
+            ) : filteredDetails.length > 0 ? (
               filteredDetails.map((row, index) => (
                 <tr key={row._id} className="border-t border-[#BDE6E2] hover:bg-[#d5f4f1] transition">
                   <td className="px-4 py-3">{index + 1}</td>
@@ -156,28 +183,26 @@ function UserFeedback() {
                   <td className="px-4 py-3">{row.suggestionType || 'N/A'}</td>
                   <td className="px-4 py-3">{new Date(row.createdAt).toLocaleDateString()}</td>
                   <td className="px-4 py-3">{row.suggestion || 'N/A'}</td>
-                  <td className={`px-4 py-3 font-medium ${getStatusClass(row.status || 'pending')}`}>
-                    {row.status || 'pending'}
+                  <td className={`px-4 py-3 font-medium ${getStatusClass(row.status)}`}>
+                    {row.status}
                   </td>
                   <td className="px-4 py-3">
                     <button
-                      className={getButtonClass(row.status || 'pending')}
-                      disabled={(row.status || 'pending') !== 'pending'}
-                      onClick={() => handleResolve(index, row._id)}
+                      className={getButtonClass(row.status)}
+                      disabled={row.status === 'resolved'}
+                      onClick={() => handleResolveClick(row)}
                     >
-                      Resolve
+                      {row.status === 'resolved' ? 'Resolved' : 'Resolve'}
                     </button>
                   </td>
                 </tr>
               ))
             ) : (
-              !loading && (
-                <tr>
-                  <td colSpan="8" className="px-4 py-6 text-center text-gray-500">
-                    No feedback available.
-                  </td>
-                </tr>
-              )
+              <tr>
+                <td colSpan="8" className="px-4 py-6 text-center text-gray-500">
+                  No feedback available.
+                </td>
+              </tr>
             )}
           </tbody>
         </table>

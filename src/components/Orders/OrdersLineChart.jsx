@@ -42,7 +42,7 @@ function OrdersLineChart() {
   }, [filter]);
 
   return (
-    <div className="bg-white p-6 rounded-xl shadow w-full md:w-[70%]">
+    <div className="bg-white p-6 rounded-xl shadow w-full md:w-[100%]">
       <h2 className="text-xl font-semibold mb-4">Orders ({filter})</h2>
 
       <div className="mb-4 flex gap-2">
