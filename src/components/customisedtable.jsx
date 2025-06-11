@@ -11,6 +11,7 @@ import TextField from '@mui/material/TextField';
 import CircularProgress from '@mui/material/CircularProgress';
 import Alert from '@mui/material/Alert';
 
+
 const columns = [
   { id: 'name', label: 'Name', minWidth: 170, align: 'center' },
   {
@@ -152,14 +153,15 @@ export default function StickyHeadTable() {
   };
 
   return (
-    <div className="container mx-auto p-4">
-      <div className="m-5 mt-4 flex justify-start">
+    <div className="container mx-auto p-4  ]">
+      <div className="m-5 mt-8 flex justify-start ">
         <TextField
-          label="Search"
-          variant="outlined"
+          label="Search for users"
+          
           onChange={handleFilter}
           fullWidth
-          sx={{ maxWidth: 400 }}
+          sx={{ maxWidth: 400  }}
+          className="bg-[#D5ECE9] border-teal-800 border-10 shadow-xl border-radius-30px"
         />
       </div>
       {loading && <CircularProgress sx={{ display: 'block', margin: '20px auto' }} />}
@@ -168,8 +170,8 @@ export default function StickyHeadTable() {
           {error}
         </Alert>
       )}
-      <div className="rounded-xl shadow-xl mt-10">
-        <Paper sx={{ width: '100%', overflow: 'hidden', boxShadow: 'none' }}>
+      <div className="rounded-xl shadow-xl mt-10  ">
+        <Paper sx={{ width: '100%', overflow: 'hidden', boxShadow: 'none' ,color:'black',border:'2px solid #00a99d',borderRadius: '12px'}}>
           <TableContainer sx={{ maxHeight: 520 }}>
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
@@ -178,9 +180,9 @@ export default function StickyHeadTable() {
                     <TableCell
                       key={column.id}
                       align={column.align}
-                      style={{ minWidth: column.minWidth, background: '#00a99d', color:'#ffff',fontSize: 13 }}
+                      style={{ minWidth: column.minWidth, background: '#00a99d', color:'black',fontSize: 15,fontweight: 800,border: '5px #D5ECE9'  }}
                     >
-                      {column.label}
+                      {column.label}  
                     </TableCell>
                   ))}
                 </TableRow>
@@ -189,14 +191,14 @@ export default function StickyHeadTable() {
                 {filteredRows
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, rowIndex) => (
-                    <TableRow hover role="checkbox" tabIndex={-1} key={rowIndex}>
+                    <TableRow hover role="checkbox" tabIndex={-1} key={rowIndex}  >
                       {columns.map((column) => {
                         const value = row[column.id];
                         return (
                           <TableCell
                             key={`${column.id}-${rowIndex}`}
                             align={column.align}
-                            style={{ fontSize: 13,padding:8,fontWeight:500, fontFamily: 'sans-serif' }}
+                            style={{ fontSize: 15,padding:14,fontWeight:500, fontFamily: 'sans-serif',background:'#D5ECE9',  }}
                           >
                             {column.format && typeof value === 'number'
                               ? column.format(value)
