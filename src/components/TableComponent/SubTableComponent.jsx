@@ -181,7 +181,7 @@ export default function SubReusableTable({
             </TableHead>
 
             <TableBody>
-              {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, idx) => (
+              {rows?.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, idx) => (
                 <TableRow hover key={idx}>
                   {columns.map((column) => (
                     <TableCell
