@@ -29,6 +29,7 @@ function CategoryHeader() {
 export default function CategoryPage() {
   const navigate = useNavigate();
   const [row, setRow] = React.useState([]);
+  const [filteredRows, setFilteredRows] = React.useState([])
   React.useEffect(() => {
     const fetchCategores = async () => {
       try {
@@ -50,6 +51,15 @@ export default function CategoryPage() {
 
     fetchCategores();
   }, []);
+
+  const handleFilter = (event) => {
+    const value = event.target.value.toLowerCase();
+    const filtered = rows.filter((row) =>
+      row.subcategory_name &&
+      row.subcategory_name.toString().toLowerCase().includes(value)
+    );
+    setFilteredRows(filtered);
+  };
 
     const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this category?")) return;
@@ -89,7 +99,7 @@ const handleEditSave = async (id, newName) => {
 
   return (
     <div style={{ margin: '50px auto', width: '80%' }}>
-      <CategoryHeader />
-<ReusableTable columns={columns} rows={row} onDelete={handleDelete} onEditSave={handleEditSave} />    </div>
+      <CategoryHeader handleFilter={handleFilter}/>
+<ReusableTable columns={columns} rows={filteredRows} onDelete={handleDelete} onEditSave={handleEditSave} />    </div>
   );
 }
