@@ -53,7 +53,7 @@ function OrdersTable() {
                 <th className="py-3 px-6 text-left">Payment</th>
                 <th className="py-3 px-6 text-left">Amount</th>
                 <th className="py-3 px-6 text-left">Status</th>
-                <th className="py-3 px-6 text-left">Details</th>
+                {/* <th className="py-3 px-6 text-left">Details</th> */}
               </tr>
             </thead>
             <tbody className="text-gray-600 text-sm font-light">
@@ -80,14 +80,14 @@ function OrdersTable() {
                     </span>
                   </td>
                   
-                  <td className="py-3 px-6 text-center">
+                  {/* <td className="py-3 px-6 text-center">
                     {order?.orderId ? (
                     <button onClick={()=> navigate(`/orders/${order.orderId}`)}
                     className="text-blue-600 hover:underline">View</button>
                     ) : (
                       <span className='text-gray-500'>No Details</span>
                     )}
-                  </td>
+                  </td> */}
                 </tr>
               ))}
             </tbody>

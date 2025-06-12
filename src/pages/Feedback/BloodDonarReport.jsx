@@ -94,7 +94,7 @@ function BloodDonarReport() {
                   <td className="px-4 py-3">{row.Donar?.phone || 'N/A'}</td>
                   <td className="px-4 py-3">{row.Donar?.bloodGroup || 'N/A'}</td>
            <td className="px-4 py-3">
-          {row.Donar?.availability === true ? 'true' : 'false'}
+          {row.Donar?.availability === true ? 'Available' : 'Unavailable'}
         </td>
                   <td className="px-4 py-3">{row.Donar?.city}</td>
                   <td className="px-4 py-3">{row.report || 'N/A'}</td>
