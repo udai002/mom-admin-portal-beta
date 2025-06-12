@@ -21,7 +21,6 @@ export function AdminProvider({ children }) {
     const [loading, setLoading] = useState(false)
     const [loginError, setLoginError] = useState(false)
 
-    const navigate = useNavigate()
 
     async function getAdminDetails() {
             const token = localStorage.getItem("jwt_token")
@@ -80,7 +79,7 @@ export function AdminProvider({ children }) {
     // logout 
     function logout() {
         localStorage.removeItem("jwt_token")
-        navigate('/login')
+
     }
 
     return <AdminContext.Provider value={{ adminDetails, isLoggedIn, loginAdmin, logout, loading, loginError }}>

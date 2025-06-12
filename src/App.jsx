@@ -1,6 +1,6 @@
 import './App.css'
 
-import { Route, Routes, BrowserRouter as Router } from 'react-router-dom'
+import { Route, Routes } from 'react-router'
 import Orders from './pages/Orders/orders'
 import Feedback from './pages/Feedback/UserFeedback'
 import { Dashboard } from './pages/DashBoard/Dashboard'
@@ -22,14 +22,13 @@ function App() {
     <AdminProvider>
       <Routes>
         <Route path='/login' element={<Login />} />
-        <Route element={<MainLayout />} >
-          <Route path='/' element={<Home />} />
-          <Route path='/deliveryboys' element={<DeliveryBoyDetails />} />
-              <Route path='/dashboard' Component={Dashboard} />
-        <Route path='/orders' Component={Orders} />
-        <Route path='/orders/:orderId' Component={ViewDetail} />
-        <Route path='/feedback' Component={Feedback} />
-        <Route path='/ResolveDetail/:userId/:username/:email/:suggestionType/:createdAt/:suggestion' Component={ResolveDetail} />
+        <Route element={<MainLayout/>}>
+        <Route path='/' element={<Dashboard />} />
+        <Route path='/deliveryboys' element={<DeliveryBoyDetails />} />
+        <Route path='/orders' element={<Orders />} />
+        <Route path='/orders/:orderId' element={<ViewDetail />} />
+        <Route path='/feedback' element={<Feedback />} />
+        <Route path='/ResolveDetail/:userId/:username/:email/:suggestionType/:createdAt/:suggestion' element={<ResolveDetail />} />
         <Route path='/donarreport' element={<BloodDonarReport />} />
         </Route>
       </Routes>

@@ -3,7 +3,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import CalenderSymbol from '../../assets/calendar.png';
 import SearchSymbol from '../../assets/Search.png';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 function UserFeedback() {
   const navigate = useNavigate();

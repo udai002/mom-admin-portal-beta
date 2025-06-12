@@ -11,15 +11,18 @@ import { useAdmin } from "../../context/AdminAuth";
 const DashboardOptionsList = [
     {
         id: 1,
-        title: "Dashboard"
+        title: "Dashboard",
+        link:"/"
     },
     {
         id: 2,
-        title: "Users"
+        title: "Users",
+
     },
     {
         id: 3,
-        title: "Orders"
+        title: "Orders",
+        link:"/orders"
     },
     {
         id: 4,
@@ -32,7 +35,8 @@ const DashboardOptionsList = [
     },
     {
         id: 6,
-        title: "Feedbacks"
+        title: "Feedbacks",
+        link:"/feedback"
     },
 
 ]
