@@ -7,19 +7,23 @@ import Home from './pages/Home'
 import Login from './pages/Login/Login'
 import DeliveryBoyDetails from './pages/Deliveryboy/Deliverboy'
 import SideBar from './components/Sidebar/SideBar'
+import MainLayout from './components/Layouts/Layout'
+import { AdminProvider } from './context/AdminAuth'
+// import ProtectedRoute from './components/NavigationsComponents/ProtectedRoutes'
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
-    <>
-    <SideBar/>
-    <Routes>
-      <Route path='/' Component={Home} />
-      <Route path='/login' Component={Login} />
-      <Route path='/deliveryboys' Component={DeliveryBoyDetails} />
-    </Routes>
-    </>
+    <AdminProvider>
+      <Routes>
+        <Route path='/login' element={<Login />} />
+        <Route element={<MainLayout />} >
+          <Route path='/' element={<Home />} />
+          <Route path='/deliveryboys' element={<DeliveryBoyDetails />} />
+        </Route>
+      </Routes>
+    </AdminProvider>
   )
 }
 

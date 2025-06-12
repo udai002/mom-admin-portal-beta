@@ -1,135 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DataTable from "react-data-table-component";
-// import Search from '../../../public/'; 
-// import profile1 from '../assets/immages/profile1.png'
-// import edit from '../assets/immages/edit.png'
+import { FaRegEdit } from "react-icons/fa";
+import { CgProfile } from "react-icons/cg";
+import { IoMdSearch } from "react-icons/io";
+
 
 export default function DeliveryBoyDetails() {
-  
-  const data = [
-    {
-      sno: 1,
-      name: "John",
-      email: "john@gmail.com",
-      area: "Area1",
-      phonenumber: "1234567890",
-      totalorders: 10,
-      status: "Active",
-      action: "View",
-      userprofile: "View",
-      averagerating: 4.5,
-    },
-    {
-      sno: 2,
-      name: "David",
-      email: "david@gmail.com",
-      area: "Area2",
-      phonenumber: "9876543210",
-      totalorders: 12,
-      status: "Inactive",
-      action: "View",
-      userprofile: "View",
-      averagerating: 4.2,
-    },
-    {
-      sno: 3,
-      name: "Aryan",
-      email: "aryan@gmail.com",
-      area: "Area3",
-      phonenumber: "9988776655",
-      totalorders: 15,
-      status: "Active",
-      action: "View",
-      userprofile: "View",
-      averagerating: 4.8,
-    },
-    {
-      sno: 4,
-      name: "Elena",
-      email: "elena@gmail.com",
-      area: "Area4",
-      phonenumber: "1234567890",
-      totalorders: 7,
-      status: "Active",
-      action: "View",
-      userprofile: "View",
-      averagerating: 4.3,
-    },
-     {
-      sno: 5,
-      name: "David",
-      email: "david@gmail.com",
-      area: "Area2",
-      phonenumber: "9876543210",
-      totalorders: 12,
-      status: "Inactive",
-      action: "View",
-      userprofile: "View",
-      averagerating: 4.2,
-    },
-    {
-      sno: 6,
-      name: "Aryan",
-      email: "aryan@gmail.com",
-      area: "Area3",
-      phonenumber: "9988776655",
-      totalorders: 15,
-      status: "Active",
-      action: "View",
-      userprofile: "View",
-      averagerating: 4.8,
-    },
-    {
-      sno: 7,
-      name: "Elena",
-      email: "elena@gmail.com",
-      area: "Area4",
-      phonenumber: "1234567890",
-      totalorders: 7,
-      status: "Active",
-      action: "View",
-      userprofile: "View",
-      averagerating: 4.3,
-    },
-     {
-      sno: 8,
-      name: "David",
-      email: "david@gmail.com",
-      area: "Area2",
-      phonenumber: "9876543210",
-      totalorders: 12,
-      status: "Inactive",
-      action: "View",
-      userprofile: "View",
-      averagerating: 4.2,
-    },
-    {
-      sno: 9,
-      name: "Aryan",
-      email: "aryan@gmail.com",
-      area: "Area3",
-      phonenumber: "9988776655",
-      totalorders: 15,
-      status: "Active",
-      action: "View",
-      userprofile: "View",
-      averagerating: 4.8,
-    },
-    {
-      sno: 10,
-      name: "Elena",
-      email: "elena@gmail.com",
-      area: "Area4",
-      phonenumber: "1234567890",
-      totalorders: 7,
-      status: "Active",
-      action: "View",
-      userprofile: "View",
-      averagerating: 4.3,
-    },
-  ];
-
+  const [data, setData] = useState([]);
   const [searchText, setSearchText] = useState('');
+
+  useEffect(() => {
+    fetch("http://localhost:3000/delivery/alldelivery/")
+      .then(response => response.json())
+      .then(parsedData => setData(parsedData))
+      .catch(error => console.error("Error fetching data:", error));
+  }, []); 
 
   const handleSearch = (event) => {
     setSearchText(event.target.value);
@@ -137,104 +22,113 @@ export default function DeliveryBoyDetails() {
 
   const filteredData = data.filter((row) => {
     return (
-      row.name.toLowerCase().includes(searchText.toLowerCase()) ||
-      row.phonenumber.includes(searchText) ||
-      row.area.toLowerCase().includes(searchText.toLowerCase())
+      row.name?.toLowerCase().includes(searchText.toLowerCase()) ||
+      row.phonenumber?.includes(searchText) ||
+      row.area?.toLowerCase().includes(searchText.toLowerCase())
     );
   });
 
   const columns = [
-    { name: "S.No", selector: (row) => row.sno },
+    { name: "ID.no", selector: (row ) =>   row._id},
     { name: "Name", selector: (row) => row.name },
-    { name: "Phone Number", selector: (row) => row.phonenumber },
+    { name: "Phone Number", selector: (row) => row.mobileNumber },
     { name: "Total Orders", selector: (row) => row.totalorders },
-    { name: "Status", selector: (row) => row.status },
+    { name: "Total LoginTime", selector: (row) => row.totalOnlineTimeInMs },
+    {name: "Store id",selector:(row)=>row.storeId},
+    { name: "Status", selector: (row) => row.status,
+      cell:(row)=>(
+      <span style={{
+        color:
+        row.status==="Online"
+        ?"green"
+        :row.status==="Busy"
+        ?"red"
+        :"black",
+      }}
+      >
+      {row.status}
+        </span>
+        ),
+    },
     { name: "Area", selector: (row) => row.area },
-    { name: "Action", selector: (row) => row.userprofile,
+    {
+      name: "Action",
       cell: row => (
-        <button 
-          onClick={() => handleImageClick(row)} 
+        <button
+          onClick={() => handleImageClick(row)}
           style={{ padding: 0, border: 'none', background: 'none' }}
         >
-          <img 
-            src={'/edit.jpg'}
-            alt="item"
-            style={{
-              width: '30px',
-              height: '30px',
-              cursor: 'pointer',
-              borderRadius: '50%',
-              border: '1px solid #ddd',  
-            }}
-          />
+          <FaRegEdit  style={{width:'20px',height:'20px'}}/>
         </button>
-      ), },
+      )
+    },
     {
       name: "User Profile",
-      selector: (row) => row.userprofile,
       cell: row => (
-        <button 
-          onClick={() => handleImageClick(row)} 
+        <button
+          onClick={() => handleImageClick(row)}
           style={{ padding: 0, border: 'none', background: 'none' }}
         >
-          <img 
-            src={'/profile.jpg'}
-            alt="item"
-            style={{
-              width: '30px',
-              height: '30px',
-              cursor: 'pointer',
-              borderRadius: '50%',
-              border: '1px solid #ddd',  
-            }}
-          />
+ <CgProfile style={{width:'20px',height:'20px'}} />
         </button>
-      ),
+      )
     },
-    { name: "Average Rating", selector: (row) => row.averagerating },
+
   ];
-
-  const handleImageClick = (row) => {
-    alert(`Image clicked for ${row.name}`);
-  };
-
   return (
-    <div className="max-w-[95%] max-h-[95%] mx-auto p-6 bg-teal-500 border border-teal-1000 rounded-xl shadow-lg" style={{ marginTop: 40 }}>
-      <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-        <h2 className="text-2xl font-bold text-center text-teal-700 mb-6" style={{ marginRight: 320, color: 'white' }}>
-          Delivery Boy Details
-        </h2>
+    <div className="max-w-[95%] mx-auto p-6 bg-teal-500 border border-teal-1000 rounded-xl shadow-lg" style={{ marginTop: 40 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '20px' }}>
+        <h2 className="text-2xl font-bold text-white">Delivery Boy Details</h2>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+         <IoMdSearch  style={{width:'25px',height:'25px'}}/>
+          <input
+            type="text"
+            value={searchText}
+            onChange={handleSearch}
+            placeholder="Search..."
+            style={{
+              backgroundColor: 'white',
+              opacity: 0.9,
+              borderWidth: 2,
+              borderRadius: 10,
+              padding: '5px 10px',
+              minWidth: '250px',
+            }}
+            
+          />
         
-        <img src={'/Search.jpeg'} alt="Search" style={{ height: 40, width: 40, marginLeft: 80 }} />
-        
-        <input
-          type="text"
-          value={searchText}
-          onChange={handleSearch}
-          placeholder="Search..."
-          style={{ backgroundColor: 'white',opacity:0.9, borderWidth: 2, marginLeft: 320, borderRadius: 10 }}
-        />
+        </div>
       </div>
 
-      <div className="bg- rounded-lg p-4 shadow-inner">
+      <div className="bg-white rounded-lg p-4 shadow-inner">
         <DataTable
           columns={columns}
-          data={filteredData} 
+          data={filteredData}
           pagination
           highlightOnHover
           striped
           customStyles={{
-            headCells: {
+            headRow: {
               style: {
                 backgroundColor: '#00A99D',
                 color: 'white',
+                fontWeight: 'bold',
+                fontSize: '16px',
+              },
+            },
+            rows: {
+              style: {
+                backgroundColor: '#D2ECE9',
+                borderRadius: '15px',
+                marginBottom: '10px',
+                fontWeight: 500,
+                fontSize: '15px',
               },
             },
             cells: {
               style: {
-                backgroundColor: 'white',
-                paddingLeft: '12px',
-                paddingRight: '12px',
+                padding: '12px',
+                justifyContent: 'center',
               },
             },
           }}

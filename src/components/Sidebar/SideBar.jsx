@@ -5,6 +5,8 @@ import { IoMenu } from "react-icons/io5";
 import { FaRegUserCircle } from "react-icons/fa";
 import { IoIosArrowForward } from "react-icons/io";
 import { useNavigate } from "react-router";
+import { FiLogOut } from "react-icons/fi";
+import { useAdmin } from "../../context/AdminAuth";
 
 const DashboardOptionsList = [
     {
@@ -56,6 +58,13 @@ function OptionItems({ title, action , link  , setOpenBar}) {
 function SideBar() {
     const [openBar, setOpenBar] = useState(false)
     
+
+    const {logout , adminDetails} = useAdmin()
+
+    function handleLogout(){
+        logout()
+    }
+    
     function handleOpenOptions() {
         setOpenBar(!openBar)
     }
@@ -68,14 +77,18 @@ function SideBar() {
                     <IoMenu />
                 </button>
 
-                <div>
-                    <p className="font-bold text-black">Hi, pardha saradhi</p>
+                {/* <div>
+                    <p className="font-bold text-black">Hi, {adminDetails?.username}</p>
                     <p className=" text-black">Welcome to mom portal!...</p>
-                </div>
+                </div> */}
 
             </div>
-            <div >
+            <div className="flex flex-row gap-3 items-center">
                 <FaRegUserCircle className="text-2xl" color="black" />
+                <p className="font-bold">{adminDetails?.username}</p>
+                <button className="p-3 cursor-pointer" onClick={handleLogout}>
+                    <FiLogOut className="text-xl"/>
+                </button>
 
             </div>
         </div>
