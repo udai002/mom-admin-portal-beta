@@ -1,3 +1,3 @@
-export default COLORS = {
+export const COLORS = {
     primary:"#00a99d"
 }
