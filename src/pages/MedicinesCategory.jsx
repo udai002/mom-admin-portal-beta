@@ -1,9 +1,7 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-// import Swal from 'sweetalert2'
 import DeleteAlert from '../components/Medicines/Deletealert';
-
+import { BsFillTrashFill, BsFillPencilFill } from 'react-icons/bs';
 
 const PaginatedTable = () => {
   const Navigate = useNavigate();
@@ -11,7 +9,6 @@ const PaginatedTable = () => {
   const itemsPerPage = 5;
   const [currentPage, setCurrentPage] = useState(1);
   const [filteredData, setFilteredData] = useState([]);
-  const [showFilter, setShowFilter] = useState(false);
   const [selectedSubCategory, setSelectedSubCategory] = useState("");
   const [subCategory, setSubCategory] = useState([]);
   const [singleCategory, setSingleCategory] = useState("");
@@ -24,12 +21,9 @@ const PaginatedTable = () => {
     setCurrentPage(page);
   };
 
-const handleDelete = async (id) => {
-  const confirmDelete = await DeleteAlert()
-  if (!confirmDelete) {
-    return;
-  }
-
+  const handleDelete = async (id) => {
+    const confirmDelete = await DeleteAlert();
+    if (!confirmDelete) return;
 
     try {
       await fetch(`http://localhost:3000/api/medicines/medicines/${id}`, {
@@ -43,20 +37,16 @@ const handleDelete = async (id) => {
       console.error('Error deleting medicine:', error);
     }
   };
+
   useEffect(() => {
     fetchMedicines();
     fetchSubCategory();
-
   }, []);
 
   const fetchMedicines = async () => {
     try {
-      const response = await fetch(
-        "http://localhost:3000/api/medicines/medicines"
-      );
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
+      const response = await fetch("http://localhost:3000/api/medicines/medicines");
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
       const json = await response.json();
       setData(json);
       setFilteredData(json);
@@ -65,16 +55,12 @@ const handleDelete = async (id) => {
     }
   };
 
-  // for drop down
   const fetchSubCategory = async () => {
     try {
-      const response = await fetch(
-        "http://localhost:3000/api/medicine/subcategories"
-      );
+      const response = await fetch("http://localhost:3000/api/medicine/subcategories");
       if (response.ok) {
         const data = await response.json();
         setSubCategory(data);
-        console.log(data);
       } else {
         console.error("Failed to fetch categories");
       }
@@ -83,52 +69,33 @@ const handleDelete = async (id) => {
     }
   };
 
-  // const handleChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setData((prevState) => ({
-  //     ...prevState,
-  //     [name]: value,
-  //   }));
-  // };
-
   const SingleSubCategory = async (id) => {
     try {
-      const response = await fetch(
-        `http://localhost:3000/api/medicine/subcategories/${id}`
-      );
+      const response = await fetch(`http://localhost:3000/api/medicine/subcategories/${id}`);
       if (response.ok) {
         const data = await response.json();
-        console.log("this is from sub category", data);
-
         setSingleCategory(data);
       }
     } catch (error) {}
   };
 
-const handleFilterChange = async (e) => {
-  const subCatId = e.target.value;
-  setSelectedSubCategory(subCatId);
-  setCurrentPage(1);
+  const handleFilterChange = async (e) => {
+    const subCatId = e.target.value;
+    setSelectedSubCategory(subCatId);
+    setCurrentPage(1);
 
-  if (subCatId === "") {
-
-    setFilteredData(data);
-    setSingleCategory("");
-  } else {
-
-    const filtered = data.filter((item) =>
-      item.subcategories?.includes(subCatId)
-    );
-    setFilteredData(filtered);
-    await SingleSubCategory(subCatId);
-  }
-};
-
-
+    if (subCatId === "") {
+      setFilteredData(data);
+      setSingleCategory("");
+    } else {
+           const filtered = data.filter((item) => item.subcategories?.includes(subCatId));
+      setFilteredData(filtered);
+      await SingleSubCategory(subCatId);
+    }
+  };
 
   const handleSearch = (event) => {
     const value = event.target.value.toLowerCase();
-
     const filtered = data.filter((item) =>
       Object.values(item).some(
         (val) => typeof val === "string" && val.toLowerCase().includes(value)
@@ -139,46 +106,45 @@ const handleFilterChange = async (e) => {
   };
 
   return (
-    
-    <div className="p-6 bg-gray-100 min-h-screen">
-      <div className='text-center ml-130 text-xl font-bold bg-[#00a99d] h-15 w-100 pt-4 text-white rounded-lg shadow-lg mb-6'>
-        <h1>Medicine Details</h1></div>
-      <div className="flex justify-between items-center mb-6 mt-2">
+    <div className="p-6  min-h-screen">
+      <div className="text-center text-xl font-bold text-[#00a99d] mb-6">
+        <h1>Medicine Details</h1>
+      </div>
+
+      {/* Search, Filter, Add Button */}
+      <div className="flex flex-wrap gap-4 justify-between items-center mb-6">
         <input
           type="text"
           onChange={handleSearch}
-          className="border border-teal-300 rounded-lg p-2 w-100 h-10 mt-10 focus:ring-2 focus:ring-teal-300"
+          className="border border-teal-300 rounded-lg px-4 py-2 w-full md:w-72 shadow-sm focus:ring-2 focus:ring-teal-400 outline-none transition"
           placeholder="Search for medicines..."
         />
 
-        <div className="relative">
-          <select
-            value={selectedSubCategory}
-            onChange={handleFilterChange}
-            className="absolute left-0 mt-2 border border-teal-300 rounded-lg p-2 w-40 bg-white z-10"
-          >
-            <option value="">Sub Categories</option>
-            {subCategory.map((cat) => (
-              <option key={cat._id} value={cat._id}>
-                {cat.subcategory_name}
-
-              </option>
-            ))}
-          </select>
-        </div>
+        <select
+          value={selectedSubCategory}
+          onChange={handleFilterChange}
+          className="border border-teal-300 rounded-lg px-4 py-2 w-full md:w-52 bg-white shadow-sm focus:ring-2 focus:ring-teal-400 outline-none transition"
+        >
+          <option value="">Sub Categories</option>
+          {subCategory.map((cat) => (
+            <option key={cat._id} value={cat._id}>
+              {cat.subcategory_name}
+            </option>
+          ))}
+        </select>
 
         <button
           onClick={() => Navigate("/medicineform")}
-          type="button"
-          className="text-white bg-gradient-to-r mt-10 from-teal-600 via-teal-700 to-teal-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none font-semibold rounded-lg text-sm px-6 py-2 shadow-md hover:shadow-lg transition"
+          className="text-white bg-teal-600 hover:bg-teal-700 font-semibold rounded-lg px-6 py-2 shadow-md transition"
         >
           + Add Medicine
         </button>
       </div>
 
-      <div className="overflow-x-auto shadow-lg rounded-xl bg-[#D5ECE9] hover:bg-[#00a99d]-50">
-        <table className="min-w-full text-sm text-left">
-          <thead className="sticky top-0 bg-teal-600 text-white text-xs uppercase tracking-wider">
+      {/* Table */}
+      <div className="overflow-x-auto shadow-lg rounded-xl bg-white">
+        <table className="min-w-full text-sm text-left border-collapse">
+          <thead className="bg-teal-600 text-white text-xs uppercase tracking-wide">
             <tr>
               {[
                 "Image",
@@ -206,7 +172,7 @@ const handleFilterChange = async (e) => {
           </thead>
           <tbody className="divide-y divide-gray-200">
             {currentItems?.map((item) => (
-              <tr key={item._id} className="hover:bg-[#b1e6e2] transition">
+              <tr key={item._id} className="hover:bg-teal-50 transition-all duration-200">
                 <td className="px-4 py-2">
                   <img
                     src={item?.imageUrl}
@@ -248,15 +214,21 @@ const handleFilterChange = async (e) => {
                 <td className="px-4 py-2">{item?.expiry_date}</td>
                 <td className="px-4 py-2">{item?.manufacture_date}</td>
                 <td className="px-4 py-2">{item?.discount}</td>
-                <td className=" flex justify-between px-4 py-2">
+                <td className="px-4 py-2 flex gap-2">
                   <button
                     onClick={() => Navigate(`/Updatedform/${item._id}`)}
-                    className="text-teal-600 hover:text-teal-800 font-semibold mr-2"
+                    className="text-teal-900 p-2 rounded border transition border-teal-700"
+                    title="Edit"
                   >
-                    Edit
+                     <BsFillPencilFill />
                   </button>
-                   <button
-                    className="text-teal-600 hover:text-teal-800 font-semibold " onClick={() => handleDelete(item._id)} >Delete</button>
+                  <button
+                    onClick={() => handleDelete(item._id)}
+                  className="text-teal-900 p-2 rounded border transition border-teal-700"
+                            title="Delete"
+                  >
+                    <BsFillTrashFill />
+                  </button>
                 </td>
               </tr>
             ))}
@@ -264,30 +236,30 @@ const handleFilterChange = async (e) => {
         </table>
       </div>
 
+      {/* Pagination */}
       <div className="mt-6 flex items-center justify-between">
         <button
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="px-4 py-2 bg-teal-600 text-white rounded-lg shadow disabled:opacity-50 hover:bg-teal-700"
+          className="px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-lg shadow disabled:opacity-50 disabled:cursor-not-allowed transition"
         >
           Previous
         </button>
+
         <p className="text-gray-700 font-medium">
           Page {currentPage} of {Math.ceil(filteredData.length / itemsPerPage)}
         </p>
+
         <button
           onClick={() => handlePageChange(currentPage + 1)}
-          disabled={
-            currentPage === Math.ceil(filteredData.length / itemsPerPage)
-          }
-          className="px-4 py-2 bg-teal-600 text-white rounded-lg shadow disabled:opacity-50 hover:bg-teal-700"
+          disabled={currentPage === Math.ceil(filteredData.length / itemsPerPage)}
+          className="px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-lg shadow disabled:opacity-50 disabled:cursor-not-allowed transition"
         >
           Next
         </button>
       </div>
     </div>
   );
-}
-
+};
 
 export default PaginatedTable;

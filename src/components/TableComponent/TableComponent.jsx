@@ -1,112 +1,9 @@
-
-// import * as React from 'react';
-// import {
-//   Paper, Table, TableBody, TableCell, TableContainer,
-//   TableHead, TablePagination, TableRow
-// } from '@mui/material';
-// import{BsFillTrashFill, BsFillPencilFill} from 'react-icons/bs';
-
-
-// export default function ReusableTable({ columns, rows, onDelete, onEdit, rowsPerPageOptions = [10, 25, 100] }) {
-//   const [page, setPage] = React.useState(0);
-//   const [rowsPerPage, setRowsPerPage] = React.useState(rowsPerPageOptions[0]);
-
-//   const handleChangePage = (event, newPage) => setPage(newPage);
-//   const handleChangeRowsPerPage = (event) => {
-//     setRowsPerPage(+event.target.value);
-//     setPage(0);
-//   };
-
-  
-//   const columnsWithActions = [
-//     ...columns,
-//     {
-//       id: 'actions',
-//       label: 'Actions',
-//       minWidth: 100,
-//       align: 'center',
-//     }
-//   ];
-
-//   return (
-//     <div className="flex flex-column justify-between margin-right-10">
-//     <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-//       <TableContainer sx={{ maxHeight: 340, overflowY: 'auto' }}
-//       className="w-1000 h-1000 object-cover rounded-lg shadow-md">
-        
-//         <Table stickyHeader
-//         className="min-w-full text-sm text-left"
-//        >
-//           <TableHead
-//           className="sticky top-0 bg-teal-600 text-white text-xs uppercase tracking-wider"
-//           >
-//             <TableRow>
-//               {columnsWithActions.map((column) => (
-//                 <TableCell
-//                   key={column.id}
-//                   align={column.align || 'left'}
-//                   style={{ minWidth: column.minWidth, backgroundColor: '#00a99d',fontSize:12,color:'#ffff',padding: '7px' }}
-//                 >
-//                   {column.label}
-//                 </TableCell>
-//               ))}
-//             </TableRow>
-//           </TableHead>
-
-//           <TableBody>
-//             {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, idx) => (
-//               <TableRow hover key={idx}>
-//                 {columns.map((column) => (
-//                   <TableCell key={column.id} align={column.align || 'left'} style={{ fontSize: 12, color: '#000',padding: '5px' }}> 
-//                     {column.format && typeof row[column.id] === 'number'
-//                       ? column.format(row[column.id])
-//                       : row[column.id]}
-//                   </TableCell>
-//                 ))}
-                
-//                 <TableCell align="center" style={{ fontSize: 12, color: '#000', padding: '5px' }}>
-//                   <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
-//                   <button style={{ display: 'flex', alignItems: 'center', backgroundColor: '#00a99d', color: '#fff', border: 'none', padding: '5px 10px', borderRadius: '4px' }}
-//                   onClick={()=>onEdit && onEdit(row._id)}>
-//                   <BsFillPencilFill style={{ marginRight: '8px', cursor: 'pointer' }} />
-//                   </button>
-//                   <button style={{ display: 'flex', alignItems: 'center', backgroundColor: '#00a99d', color: '#fff', border: 'none', padding: '5px 10px', borderRadius: '4px' }} 
-//                   onClick={()=>onDelete && onDelete(row._id)}>
-//                   <BsFillTrashFill style={{ cursor: 'pointer' }} />
-//                   </button>
-//                   </div>
-//                 </TableCell>
-//               </TableRow>
-//             ))}
-//           </TableBody>
-//         </Table>
-//       </TableContainer>
-
-//       <TablePagination
-//         rowsPerPageOptions={rowsPerPageOptions}
-//         component="div"
-//         count={rows.length}
-//         rowsPerPage={rowsPerPage}
-//         page={page}
-//         onPageChange={handleChangePage}
-//         onRowsPerPageChange={handleChangeRowsPerPage}
-//       />
-//     </Paper>
-//     <div>
-
-//     </div>
-//     </div>
-//   );
-// }
-
-
-
 import * as React from 'react';
 import {
   Paper, Table, TableBody, TableCell, TableContainer,
   TableHead, TablePagination, TableRow
 } from '@mui/material';
-import { BsFillTrashFill, BsFillPencilFill, BsCheckLg, BsX } from 'react-icons/bs';
+import { BsFillTrashFill, BsFillPencilFill, BsCheckLg } from 'react-icons/bs';
 
 export default function ReusableTable({
   columns,
@@ -149,29 +46,44 @@ export default function ReusableTable({
     {
       id: 'actions',
       label: 'Actions',
-      minWidth: 100,
+      minWidth: 120,
       align: 'center',
     }
   ];
 
   return (
-    <div className="flex flex-column justify-between margin-right-10">
-      <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-        <TableContainer sx={{ maxHeight: 340, overflowY: 'auto' }}
-          className="w-1000 h-1000 object-cover rounded-lg shadow-md">
-          <Table stickyHeader className="min-w-full text-sm text-left">
-            <TableHead className="sticky top-0 bg-teal-600 text-white text-xs uppercase tracking-wider">
+    <div className="p-4">
+      <Paper
+        elevation={4}
+        sx={{
+          width: '100%',
+          overflow: 'hidden',
+          borderRadius: 3,
+          boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
+        }}
+      >
+        <TableContainer
+          sx={{
+            maxHeight: 440,
+            overflowY: 'auto',
+            borderTopLeftRadius: '12px',
+            borderTopRightRadius: '12px',
+          }}
+        >
+          <Table stickyHeader>
+            <TableHead>
               <TableRow>
                 {columnsWithActions.map((column) => (
                   <TableCell
                     key={column.id}
                     align={column.align || 'left'}
-                    style={{
-                      minWidth: column.minWidth,
+                    sx={{
                       backgroundColor: '#00a99d',
-                      fontSize: 12,
-                      color: '#ffff',
-                      padding: '7px'
+                      color: 'white',
+                      fontWeight: 'bold',
+                      fontSize: 14,
+                      padding: '12px 16px',
+                      textTransform: 'uppercase',
                     }}
                   >
                     {column.label}
@@ -181,68 +93,81 @@ export default function ReusableTable({
             </TableHead>
 
             <TableBody>
-              {rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, idx) => (
-                <TableRow hover key={idx}>
-                  {columns.map((column) => (
-                    <TableCell
-                      key={column.id}
-                      align={column.align || 'left'}
-                      style={{ fontSize: 12, color: '#000', padding: '5px' }}
-                    >
-                      {column.id === 'category_name' && editId === row._id ? (
-                        <input
-                          value={editValue}
-                          onChange={e => setEditValue(e.target.value)}
-                          onKeyDown={e => {
-                            if (e.key === 'Enter') saveEdit();
-                            if (e.key === 'Escape') cancelEdit();
-                          }}
-                          autoFocus
-                          style={{ fontSize: 12, padding: '2px 4px', width: '90%' }}
-                        />
+              {rows
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((row, idx) => (
+                  <TableRow
+                    hover
+                    key={idx}
+                    sx={{
+                      '&:hover': {
+                        backgroundColor: '#f0fdfa',
+                      },
+                    }}
+                  >
+                    {columns.map((column) => (
+                      <TableCell
+                        key={column.id}
+                        align={column.align || 'left'}
+                        sx={{
+                          fontSize: 14,
+                          padding: '10px 16px',
+                          color: '#333',
+                        }}
+                      >
+                        {column.id === 'category_name' && editId === row._id ? (
+                          <input
+                            value={editValue}
+                            onChange={e => setEditValue(e.target.value)}
+                            onKeyDown={e => {
+                              if (e.key === 'Enter') saveEdit();
+                              if (e.key === 'Escape') cancelEdit();
+                            }}
+                            autoFocus
+                            style={{
+                              fontSize: 14,
+                              padding: '6px 10px',
+                              width: '100%',
+                              border: '1px solid #ccc',
+                              borderRadius: '4px',
+                            }}
+                          />
+                        ) : (
+                          row[column.id]
+                        )}
+                      </TableCell>
+                    ))}
+
+                    <TableCell align="center" sx={{ padding: '10px 16px' }}>
+                      {editId === row._id ? (
+                        <button
+                          onClick={saveEdit}
+                          className="bg-teal-600 text-white p-2 rounded hover:bg-teal-700 transition"
+                          title="Save"
+                        >
+                          <BsCheckLg />
+                        </button>
                       ) : (
-                        row[column.id]
+                        <div className="flex justify-center gap-3">
+                          <button
+                            onClick={() => startEdit(row)}
+                            className=" text-teal-900 p-2 rounded border transition border-teal-700"
+                            title="Edit"
+                          >
+                            <BsFillPencilFill />
+                          </button>
+                          <button
+                            onClick={() => onDelete && onDelete(row._id)}
+                            className="text-teal-900 p-2 rounded border transition border-teal-700"
+                            title="Delete"
+                          >
+                            <BsFillTrashFill />
+                          </button>
+                        </div>
                       )}
                     </TableCell>
-                  ))}
-
-                  <TableCell align="center" style={{ fontSize: 12, color: '#000', padding: '5px' }}>
-                    <div style={{ display: 'flex', justifyContent: 'center', gap: '10px' }}>
-                      {editId === row._id ? (
-                        <>
-                          <button
-                            style={{ background: '#00a99d', color: '#fff', border: 'none', borderRadius: '4px', padding: '5px' }}
-                            onClick={saveEdit}
-                          >
-                            <BsCheckLg />
-                          </button>
-                          {/* <button
-                            style={{ background: '#ccc', color: '#fff', border: 'none', borderRadius: '4px', padding: '5px' }}
-                            onClick={cancelEdit}
-                          >
-                            <BsX />
-                          </button> */}
-                        </>
-                      ) : (
-                        <>
-                          <button
-                            style={{ display: 'flex', alignItems: 'center', backgroundColor: '#00a99d', color: '#fff', border: 'none', padding: '5px 10px', borderRadius: '4px' }}
-                            onClick={() => startEdit(row)}
-                          >
-                            <BsFillPencilFill style={{ marginRight: '8px', cursor: 'pointer' }} />
-                          </button>
-                          <button
-                            style={{ display: 'flex', alignItems: 'center', backgroundColor: '#00a99d', color: '#fff', border: 'none', padding: '5px 10px', borderRadius: '4px' }}
-                            onClick={() => onDelete && onDelete(row._id)}
-                          >
-                            <BsFillTrashFill style={{ cursor: 'pointer' }} />
-                          </button>
-                        </>
-                      )}
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
+                  </TableRow>
+                ))}
             </TableBody>
           </Table>
         </TableContainer>
@@ -255,9 +180,17 @@ export default function ReusableTable({
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
+          sx={{
+            '.MuiTablePagination-toolbar': {
+              padding: '0 16px',
+              backgroundColor: '#f1f5f9',
+            },
+            '.MuiTablePagination-selectLabel, .MuiTablePagination-displayedRows': {
+              fontSize: '13px',
+            }
+          }}
         />
       </Paper>
-      <div></div>
     </div>
   );
 }

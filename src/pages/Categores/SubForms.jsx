@@ -47,8 +47,6 @@ function SubForms() {
       });
       if (response.ok) {
         const data = await response.json();
-        console.log('Subcategory created:', data);
-        
         setFormData({
           subcategory_name: '',
           category: ''
@@ -97,13 +95,12 @@ function SubForms() {
                     name="category"
                     value={formData.category}
                     onChange={handleChange}
-                 
                     required
                   >
-                    <option value="select Category">Select a category</option>
+                    <option value="">Select a category</option>
                     {categories.map((category) => (
                       <option key={category._id} value={category._id} className="text-gray-700">
-                       <div className='text-red-800'> {category.category_name} </div>
+                        {category.category_name}
                       </option>
                     ))}
                   </select>
@@ -114,8 +111,8 @@ function SubForms() {
                 <button
                   type="submit"
                   disabled={loading}
-                  className={`bg-#00a99d-500 flex justify-center items-center w-full text-white px-4 py-3 rounded-md focus:outline-none ${
-                    loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-green-600'
+                  className={`bg-teal-500 flex justify-center items-center w-full text-white px-4 py-3 rounded-md focus:outline-none ${
+                    loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-teal-600'
                   }`}
                 >
                   {loading ? 'Creating...' : 'Create SubCategory'}

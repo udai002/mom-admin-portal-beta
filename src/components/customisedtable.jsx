@@ -13,32 +13,32 @@ import Alert from '@mui/material/Alert';
 
 
 const columns = [
-  { id: 'name', label: 'Name', minWidth: 170, align: 'center' },
+  { id: 'name', label: 'Name', minWidth: 150, align: 'center' },
   {
     id: 'mobileNo',
     label: 'Mobile Number',
-    minWidth: 170,
+    minWidth: 150,
     align: 'center',
     format: (value) => value.toLocaleString('en-US'),
   },
   {
     id: 'dateOfBirth',
     label: 'Date of Birth',
-    minWidth: 170,
+    minWidth: 150,
     align: 'center',
     format: (value) => value.toLocaleString('en-US'),
   },
   {
     id: 'gender',
     label: 'Gender',
-    minWidth: 170,
+    minWidth: 150,
     align: 'center',
     format: (value) => value.toLocaleString('en-US'),
   },
   {
     id: 'email',
     label: 'Email',
-    minWidth: 170,
+    minWidth: 150,
     align: 'center',
     format: (value) => value.toLocaleString('en-US'),
   },
@@ -46,26 +46,26 @@ const columns = [
   {
     id: 'bloodgroup',
     label: 'Blood Group',
-    minWidth: 170,
+    minWidth: 150,
     align: 'center',
     format: (value) => value.toLocaleString('en-US'),
   },
   {
     id: 'isAdmin',
     label: 'Admin',
-    minWidth: 170,
+    minWidth: 150,
     align: 'center',
   },
   {
     id: 'isRegistered',
     label: 'Registered',
-    minWidth: 170,
+    minWidth: 150,
     align: 'center',
   },
   {
     id: 'primaryAddress',
     label: 'Primary Address',
-    minWidth: 170,
+    minWidth: 150,
     align: 'center',
     format: (value) => value.toLocaleString('en-US'),
   },
@@ -88,7 +88,7 @@ export default function StickyHeadTable() {
       setLoading(true);
       setError(null);
       try {
-        const response = await fetch('http://localhost:3000/api/user/');
+        const response = await fetch('http://localhost:3000/api/user/all');
         const json = await response.json();
         console.log('API Response:', json);
 
@@ -161,7 +161,7 @@ export default function StickyHeadTable() {
           onChange={handleFilter}
           fullWidth
           sx={{ maxWidth: 400  }}
-          className="bg-[#D5ECE9] border-teal-800 border-10 shadow-xl border-radius-30px"
+          className="border-teal-800 border-10 shadow-xl border-radius-30px"
         />
       </div>
       {loading && <CircularProgress sx={{ display: 'block', margin: '20px auto' }} />}
@@ -171,7 +171,7 @@ export default function StickyHeadTable() {
         </Alert>
       )}
       <div className="rounded-xl shadow-xl mt-10  ">
-        <Paper sx={{ width: '100%', overflow: 'hidden', boxShadow: 'none' ,color:'black',border:'2px solid #00a99d',borderRadius: '12px'}}>
+        <Paper sx={{ width: '100%', overflow: 'hidden', boxShadow: 'none' ,border:'2px solid #00a99d',borderRadius: '12px', color:'white'}}>
           <TableContainer sx={{ maxHeight: 520 }}>
             <Table stickyHeader aria-label="sticky table">
               <TableHead>
@@ -180,7 +180,7 @@ export default function StickyHeadTable() {
                     <TableCell
                       key={column.id}
                       align={column.align}
-                      style={{ minWidth: column.minWidth, background: '#00a99d', color:'black',fontSize: 15,fontweight: 800,border: '5px #D5ECE9'  }}
+                      style={{ minWidth: column.minWidth, background: '#00a99d', color:'black',fontSize: 14,fontweight: 800,border: '5px #D5ECE9',padding:10  }}
                     >
                       {column.label}  
                     </TableCell>
@@ -198,7 +198,7 @@ export default function StickyHeadTable() {
                           <TableCell
                             key={`${column.id}-${rowIndex}`}
                             align={column.align}
-                            style={{ fontSize: 15,padding:14,fontWeight:500, fontFamily: 'sans-serif',background:'#D5ECE9',  }}
+                            style={{ fontSize: 14,padding:5,fontWeight:500, fontFamily: 'sans-serif',  }}
                           >
                             {column.format && typeof value === 'number'
                               ? column.format(value)

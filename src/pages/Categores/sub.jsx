@@ -12,33 +12,24 @@ const columns = [
 function CategoryHeader({ searchValue, onSearchChange }) {
   const navigate = useNavigate();
   return (
-    <div>
-      <h1 style={{ textAlign: "center", marginBottom: "20px", color: "#00a99d", fontSize: 30 }}>
-        Sub-Categories
-      </h1>
-      <Stack direction="row" spacing={2} marginBottom={2}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", width: "100%" }}>
-          <TextField
-            label="Search"
-            variant="outlined"
-            value={searchValue}
-            onChange={onSearchChange}
-            fullWidth
-            sx={{ maxWidth: 300, "& .MuiInputBase-root": { height: 36 } }}
-            InputProps={{ sx: { height: 36 } }}
-          />
-          <Button
-            onClick={() => navigate("/sub-forms")}
-            variant="contained"
-            sx={{ backgroundColor: "#00a99d" }}
-          >
-            Add Sub-Category
-          </Button>
-        </div>
-      </Stack>
+    <div className="flex flex-col sm:flex-row sm:items-center justify-between w-full gap-4 mt-6">
+      <input
+        type="text"
+        placeholder="Search Sub-Categories"
+        value={searchValue}
+        onChange={onSearchChange}
+        className="w-full sm:w-1/2 px-4 py-2 border border-teal-400 rounded-lg focus:outline-none focus:ring-2 focus:ring-teal-500 text-gray-700"
+      />
+      <button
+        onClick={() => navigate("/sub-forms")}
+        className="bg-teal-600 hover:bg-teal-700 text-white font-medium px-6 py-2 rounded-lg transition duration-200 shadow-md w-full sm:w-auto"
+      >
+        + Add Sub-Category
+      </button>
     </div>
   );
 }
+
 
 function SubCategories() {
   const [categories, setCategories] = useState([]);
@@ -154,30 +145,47 @@ function SubCategories() {
     }
   };
 
+ 
   return (
-    <div style={{ margin: "50px auto", width: "80%" }}>
-      <div className="relative">
-        <select
-          value={selectedCategoryId}
-          onChange={handleCategoryChange}
-          className="absolute left-0 mt-2 border border-teal-300 rounded-lg p-2 w-40 bg-white z-10"
-        >
-          <option value="">All Categories</option>
-          {categories.map((cat) => (
-            <option key={cat._id} value={cat._id}>
-              {cat.category_name}
-            </option>
-          ))}
-        </select>
+
+      <div className="max-w-6xl mx-auto p-6 md:p-10">
+        <h1 className="text-3xl font-bold text-teal-600 text-center mb-8">Sub-Categories</h1>
+
+        {/* Filter + Search Section */}
+        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-6">
+          <div className="flex flex-col gap-2 w-full md:w-auto">
+            <label className="text-gray-700 font-semibold">Filter by Category</label>
+            <select
+              value={selectedCategoryId}
+              onChange={handleCategoryChange}
+              className="border border-teal-300 rounded-lg px-4 py-2 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-teal-400"
+            >
+              <option value="">All Categories</option>
+              {categories.map((cat) => (
+                <option key={cat._id} value={cat._id}>
+                  {cat.category_name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <CategoryHeader
+            searchValue={searchValue}
+            onSearchChange={handleSearchChange}
+          />
+        </div>
+
+        {/* Table */}
+        <div className="mt-4">
+          <SubReusableTable
+            columns={columns}
+            rows={filteredSubCategories}
+            onDelete={handleDelete}
+            onEditSave={handleEditSave}
+          />
+        </div>
       </div>
-      <CategoryHeader searchValue={searchValue} onSearchChange={handleSearchChange} />
-      <SubReusableTable
-        columns={columns}
-        rows={filteredSubCategories}
-        onDelete={handleDelete}
-        onEditSave={handleEditSave}
-      />
-    </div>
+  
   );
 }
 
