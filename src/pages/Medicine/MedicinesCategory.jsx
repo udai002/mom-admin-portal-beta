@@ -107,7 +107,7 @@ const PaginatedTable = () => {
 
   return (
     <div className="p-6  min-h-screen">
-      <div className="text-center text-xl font-bold text-[#00a99d] mb-6">
+      <div className="text-3xl font-bold text-teal-600 text-center mb-8">
         <h1>Medicine Details</h1>
       </div>
 
@@ -170,68 +170,76 @@ const PaginatedTable = () => {
               ))}
             </tr>
           </thead>
-          <tbody className="divide-y divide-gray-200">
-            {currentItems?.map((item) => (
-              <tr key={item._id} className="hover:bg-teal-50 transition-all duration-200">
-                <td className="px-4 py-2">
-                  <img
-                    src={item?.imageUrl}
-                    alt={item?.medicine_name}
-                    className="w-10 h-10 object-cover rounded"
-                  />
-                </td>
-                <td className="px-4 py-2" title={item?.medicine_name}>
-                  {item?.medicine_name?.slice(0, 10)}...
-                </td>
-                <td className="px-4 py-2">{item?.price}</td>
-                <td className="px-4 py-2">
-                  {item?.prescription_drug ? "Yes" : "No"}
-                </td>
-                <td className="px-4 py-2" title={item?.description}>
-                  {item?.description?.slice(0, 10)}...
-                </td>
-                <td className="px-4 py-2" title={item?.use}>
-                  {item?.use?.slice(0, 10)}...
-                </td>
-                <td className="px-4 py-2" title={item?.ingredients}>
-                  {item?.ingredients?.slice(0, 10)}...
-                </td>
-                <td className="px-4 py-2" title={item?.dose}>
-                  {item?.dose?.slice(0, 10)}...
-                </td>
-                <td className="px-4 py-2" title={item?.manufacturer}>
-                  {item?.manufacturer?.slice(0, 10)}...
-                </td>
-                <td className="px-4 py-2" title={item?.not_for}>
-                  {item?.not_for?.slice(0, 10)}...
-                </td>
-                <td className="px-4 py-2" title={item?.side_effects}>
-                  {item?.side_effects?.slice(0, 10)}...
-                </td>
-                <td className="px-4 py-2" title={item?.store}>
-                  {item?.store?.slice(0, 10)}...
-                </td>
-                <td className="px-4 py-2">{item?.expiry_date}</td>
-                <td className="px-4 py-2">{item?.manufacture_date}</td>
-                <td className="px-4 py-2">{item?.discount}</td>
-                <td className="px-4 py-2 flex gap-2">
-                  <button
-                    onClick={() => Navigate(`/Updatedform/${item._id}`)}
-                    className="text-teal-900 p-2 rounded border transition border-teal-700"
-                    title="Edit"
-                  >
-                     <BsFillPencilFill />
-                  </button>
-                  <button
-                    onClick={() => handleDelete(item._id)}
-                  className="text-teal-900 p-2 rounded border transition border-teal-700"
-                            title="Delete"
-                  >
-                    <BsFillTrashFill />
-                  </button>
+        <tbody className="divide-y divide-gray-200">
+            {currentItems.length === 0 ? (
+              <tr>
+                <td colSpan={16} className="text-center py-8 text-gray-500">
+                  No medicine found
                 </td>
               </tr>
-            ))}
+            ) : (
+              currentItems?.map((item) => (
+                <tr key={item._id} className="hover:bg-teal-50 transition-all duration-200">
+                  <td className="px-4 py-2">
+                    <img
+                      src={item?.imageUrl}
+                      alt={item?.medicine_name}
+                      className="w-10 h-10 object-cover rounded"
+                    />
+                  </td>
+                  <td className="px-4 py-2" title={item?.medicine_name}>
+                    {item?.medicine_name?.slice(0, 10)}...
+                  </td>
+                  <td className="px-4 py-2">{item?.price}</td>
+                  <td className="px-4 py-2">
+                    {item?.prescription_drug ? "Yes" : "No"}
+                  </td>
+                  <td className="px-4 py-2" title={item?.description}>
+                    {item?.description?.slice(0, 10)}...
+                  </td>
+                  <td className="px-4 py-2" title={item?.use}>
+                    {item?.use?.slice(0, 10)}...
+                  </td>
+                  <td className="px-4 py-2" title={item?.ingredients}>
+                    {item?.ingredients?.slice(0, 10)}...
+                  </td>
+                  <td className="px-4 py-2" title={item?.dose}>
+                    {item?.dose?.slice(0, 10)}...
+                  </td>
+                  <td className="px-4 py-2" title={item?.manufacturer}>
+                    {item?.manufacturer?.slice(0, 10)}...
+                  </td>
+                  <td className="px-4 py-2" title={item?.not_for}>
+                    {item?.not_for?.slice(0, 10)}...
+                  </td>
+                  <td className="px-4 py-2" title={item?.side_effects}>
+                    {item?.side_effects?.slice(0, 10)}...
+                  </td>
+                  <td className="px-4 py-2" title={item?.store}>
+                    {item?.store?.slice(0, 10)}...
+                  </td>
+                  <td className="px-4 py-2">{item?.expiry_date}</td>
+                  <td className="px-4 py-2">{item?.manufacture_date}</td>
+                  <td className="px-4 py-2">{item?.discount}</td>
+                  <td className="px-4 py-2 flex gap-2">
+                    <button
+                      onClick={() => Navigate(`/Updatedform/${item._id}`)}
+                      className="text-teal-900 p-2 rounded border transition border-teal-700"
+                      title="Edit"
+                    >
+                      <BsFillPencilFill />
+                    </button>
+                    <button
+                      onClick={() => handleDelete(item._id)}
+                      className="text-teal-900 p-2 rounded border transition border-teal-700"
+                      title="Delete"
+                    >
+                      <BsFillTrashFill />
+                    </button>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>

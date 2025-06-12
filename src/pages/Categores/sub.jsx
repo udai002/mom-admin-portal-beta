@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import SubReusableTable from "../../components/TableComponent/SubTableComponent";
 import * as React from "react";
 import { useState, useEffect } from "react";
+import DeleteAlert from "../../components/Medicines/Deletealert";
 
 const columns = [
   { id: "_id", label: "Sub-Category ID", minWidth: 70 },
@@ -101,6 +102,8 @@ function SubCategories() {
   };
 
   const handleDelete = async (id) => {
+    const confirmDelete = await DeleteAlert();
+    if (!confirmDelete) return;
     try {
       const response = await fetch(
         `http://localhost:3000/api/medicines/subcategories/${id}`,
@@ -167,14 +170,14 @@ function SubCategories() {
 
 
       <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-6">
-        <div className="flex flex-col gap-2 w-full md:w-auto">
-          <label className="text-gray-700 font-semibold">Filter by Category</label>
+        <div className="flex flex-col gap-2 pt-6 w-full md:w-auto">
+          {/* <label className="text-gray-700 font-semibold">Filter by Category</label> */}
           <select
             value={selectedCategoryId}
             onChange={handleCategoryChange}
             className="border border-teal-300 rounded-lg px-4 py-2 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-teal-400"
           >
-            <option value="">All Categories</option>
+            <option value="">Filter by Categories</option>
             {categories.map((cat) => (
               <option key={cat._id} value={cat._id}>
                 {cat.category_name}

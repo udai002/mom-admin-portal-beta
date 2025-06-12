@@ -15,7 +15,9 @@ const DeleteAlert =async()=>{
     await Swal.fire({
       title: "Deleted!",
       text: "Your file has been deleted.",
-      icon: "success"
+      icon: "success",
+      confirmButtonColor: "#00a99d",
+      confirmButtonText: "OK"
     });
     return true;
   }

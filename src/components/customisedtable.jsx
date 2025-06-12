@@ -154,8 +154,8 @@ export default function StickyHeadTable() {
 
   return (
     <div className="container mx-auto p-4  ]">
-            <div className="text-center text-xl font-bold text-[#00a99d] mb-6">
-        <h1>Medicine Details</h1>
+            <div className="text-3xl font-bold text-teal-600 text-center mb-8">
+        <h1>User Details</h1>
       </div>
       <div className="m-5 mt-8 flex justify-start ">
 <input
@@ -188,27 +188,47 @@ export default function StickyHeadTable() {
                   ))}
                 </TableRow>
               </TableHead>
-              <TableBody>
-                {filteredRows
-                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                  .map((row, rowIndex) => (
-                    <TableRow hover role="checkbox" tabIndex={-1} key={rowIndex}  >
-                      {columns.map((column) => {
-                        const value = row[column.id];
-                        return (
-                          <TableCell
-                            key={`${column.id}-${rowIndex}`}
-                            align={column.align}
-                            style={{ fontSize: 14,padding:5,fontWeight:500, fontFamily: 'sans-serif',  }}
-                          >
-                            {column.format && typeof value === 'number'
-                              ? column.format(value)
-                              : value}
-                          </TableCell>
-                        );
-                      })}
-                    </TableRow>
-                  ))}
+         <TableBody>
+                {filteredRows.length === 0 && !loading && !error ? (
+                  <TableRow>
+                    <TableCell colSpan={columns.length} align="center">
+                      <div style={{ textAlign:"center",width:'70%',fontSize: 16, color: '#888'}}>
+                        No user found
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  filteredRows
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row, rowIndex) => (
+                      <TableRow
+                        hover
+                        role="checkbox"
+                        tabIndex={-1}
+                        key={rowIndex}
+                      >
+                        {columns.map((column) => {
+                          const value = row[column.id];
+                          return (
+                            <TableCell
+                              key={`${column.id}-${rowIndex}`}
+                              align={column.align}
+                              style={{
+                                fontSize: 14,
+                                padding: 5,
+                                fontWeight: 500,
+                                fontFamily: "sans-serif",
+                              }}
+                            >
+                              {column.format && typeof value === "number"
+                                ? column.format(value)
+                                : value}
+                            </TableCell>
+                          );
+                        })}
+                      </TableRow>
+                    ))
+                )}
               </TableBody>
             </Table>
           </TableContainer>

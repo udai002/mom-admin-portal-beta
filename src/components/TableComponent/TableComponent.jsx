@@ -92,82 +92,90 @@ export default function ReusableTable({
               </TableRow>
             </TableHead>
 
-            <TableBody>
-              {rows
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, idx) => (
-                  <TableRow
-                    hover
-                    key={idx}
-                    sx={{
-                      '&:hover': {
-                        backgroundColor: '#f0fdfa',
-                      },
-                    }}
-                  >
-                    {columns.map((column) => (
-                      <TableCell
-                        key={column.id}
-                        align={column.align || 'left'}
-                        sx={{
-                          fontSize: 14,
-                          padding: '10px 16px',
-                          color: '#333',
-                        }}
-                      >
-                        {column.id === 'category_name' && editId === row._id ? (
-                          <input
-                            value={editValue}
-                            onChange={e => setEditValue(e.target.value)}
-                            onKeyDown={e => {
-                              if (e.key === 'Enter') saveEdit();
-                              if (e.key === 'Escape') cancelEdit();
-                            }}
-                            autoFocus
-                            style={{
-                              fontSize: 14,
-                              padding: '6px 10px',
-                              width: '100%',
-                              border: '1px solid #ccc',
-                              borderRadius: '4px',
-                            }}
-                          />
+        <TableBody>
+              {rows.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={columnsWithActions.length} align="center" sx={{ fontSize: 16, color: '#888', padding: '32px 0' }}>
+                    No categories found
+                  </TableCell>
+                </TableRow>
+              ) : (
+                rows
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row, idx) => (
+                    <TableRow
+                      hover
+                      key={idx}
+                      sx={{
+                        '&:hover': {
+                          backgroundColor: '#f0fdfa',
+                        },
+                      }}
+                    >
+                      {columns.map((column) => (
+                        <TableCell
+                          key={column.id}
+                          align={column.align || 'left'}
+                          sx={{
+                            fontSize: 14,
+                            padding: '10px 16px',
+                            color: '#333',
+                          }}
+                        >
+                          {column.id === 'category_name' && editId === row._id ? (
+                            <input
+                              value={editValue}
+                              onChange={e => setEditValue(e.target.value)}
+                              onKeyDown={e => {
+                                if (e.key === 'Enter') saveEdit();
+                                if (e.key === 'Escape') cancelEdit();
+                              }}
+                              autoFocus
+                              style={{
+                                fontSize: 14,
+                                padding: '6px 10px',
+                                width: '100%',
+                                border: '1px solid #ccc',
+                                borderRadius: '4px',
+                              }}
+                            />
+                          ) : (
+                            row[column.id]
+                          )}
+                        </TableCell>
+                      ))}
+
+                      <TableCell align="center" sx={{ padding: '10px 16px' }}>
+                        {editId === row._id ? (
+                          <button
+                            onClick={saveEdit}
+                            className="bg-teal-600 text-white p-2 rounded hover:bg-teal-700 transition"
+                            title="Save"
+                          >
+                            <BsCheckLg />
+                          </button>
                         ) : (
-                          row[column.id]
+                          <div className="flex justify-center gap-3">
+                            <button
+                              onClick={() => startEdit(row)}
+                              className=" text-teal-900 p-2 rounded border transition border-teal-700"
+                              title="Edit"
+                            >
+                              <BsFillPencilFill />
+                            </button>
+                            <button
+                              onClick={() => onDelete && onDelete(row._id)}
+                              className="text-teal-900 p-2 rounded border transition border-teal-700"
+                              title="Delete"
+                            >
+                              <BsFillTrashFill />
+                            </button>
+                          </div>
                         )}
                       </TableCell>
-                    ))}
-
-                    <TableCell align="center" sx={{ padding: '10px 16px' }}>
-                      {editId === row._id ? (
-                        <button
-                          onClick={saveEdit}
-                          className="bg-teal-600 text-white p-2 rounded hover:bg-teal-700 transition"
-                          title="Save"
-                        >
-                          <BsCheckLg />
-                        </button>
-                      ) : (
-                        <div className="flex justify-center gap-3">
-                          <button
-                            onClick={() => startEdit(row)}
-                            className=" text-teal-900 p-2 rounded border transition border-teal-700"
-                            title="Edit"
-                          >
-                            <BsFillPencilFill />
-                          </button>
-                          <button
-                            onClick={() => onDelete && onDelete(row._id)}
-                            className="text-teal-900 p-2 rounded border transition border-teal-700"
-                            title="Delete"
-                          >
-                            <BsFillTrashFill />
-                          </button>
-                        </div>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                ))}
+                    </TableRow>
+                  ))
+              )}
             </TableBody>
           </Table>
         </TableContainer>

@@ -109,124 +109,84 @@ export default function SubReusableTable({
               </TableRow>
             </TableHead>
 
-            <TableBody>
-              {rows
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row) => (
-                  <TableRow
-                    hover
-                    key={row._id}
-                    sx={{ '&:hover': { backgroundColor: '#f0fdfa' } }}
+         <TableBody>
+              {rows.length === 0 ? (
+                <TableRow>
+                  <TableCell
+                    colSpan={columnsWithActions.length}
+                    align="center"
+                    sx={{ fontSize: 16, color: '#888', padding: '32px 0' }}
                   >
-                    {columns.map((column) => {
-                      const isEditing = editId === row._id;
-
-                      if (column.id === 'subcategory_name') {
-                        return (
-                          <TableCell key={column.id}>
-                            {isEditing ? (
-                              <input
-                                value={editValue}
-                                onChange={(e) => setEditValue(e.target.value)}
-                                onKeyDown={(e) => {
-                                  if (e.key === 'Enter') saveEdit();
-                                  if (e.key === 'Escape') cancelEdit();
-                                }}
-                                autoFocus
-                                className="w-full border border-gray-300 rounded px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
-                              />
-                            ) : (
-                              row[column.id]
-                            )}
-                          </TableCell>
-                        );
-                      }
-
-                      if (column.id === 'imageUrl') {
-                        return (
-                          <TableCell key={column.id}>
-                            {isEditing ? (
-                              <div className="flex flex-col gap-2">
-                                <input
-                                  type="file"
-                                  accept="image/*"
-                                  onChange={(e) => {
-                                    const file = e.target.files[0];
-                                    if (file) {
-                                      setEditImage(file);
-                                    }
-                                  }}
-                                  className="text-sm"
-                                />
-                                <img
-                                  src={
-                                    editImage
-                                      ? URL.createObjectURL(editImage)
-                                      : row[column.id]
-                                  }
-                                  alt="Preview"
-                                  style={{
-                                    width: '60px',
-                                    height: '60px',
-                                    objectFit: 'cover',
-                                    borderRadius: '6px',
-                                    border: '1px solid #ccc',
-                                  }}
-                                />
-                              </div>
-                            ) : (
-                              <img
-                                src={row[column.id]}
-                                alt="Subcategory"
-                                style={{
-                                  width: '60px',
-                                  height: '60px',
-                                  objectFit: 'cover',
-                                  borderRadius: '6px',
-                                }}
-                              />
-                            )}
-                          </TableCell>
-                        );
-                      }
-
-                      return (
-                        <TableCell key={column.id}>
-                          {row[column.id]}
-                        </TableCell>
-                      );
-                    })}
-
-                    <TableCell align="center" sx={{ padding: '10px 16px' }}>
-                      {editId === row._id ? (
-                        <button
-                          onClick={saveEdit}
-                          className="bg-green-600 text-white p-2 rounded hover:bg-green-700 transition duration-200"
-                          title="Save"
+                    No sub categories found
+                  </TableCell>
+                </TableRow>
+              ) : (
+                rows
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row, idx) => (
+                    <TableRow
+                      hover
+                      key={idx}
+                      sx={{ '&:hover': { backgroundColor: '#f0fdfa' } }}
+                    >
+                      {columns.map((column) => (
+                        <TableCell
+                          key={column.id}
+                          align={column.align || 'left'}
+                          sx={{
+                            fontSize: 14,
+                            padding: '10px 16px',
+                            color: '#333',
+                          }}
                         >
-                          <BsCheckLg />
-                        </button>
-                      ) : (
-                        <div className="flex justify-center gap-3">
+                          {column.id === 'subcategory_name' && editId === row._id ? (
+                            <input
+                              value={editValue}
+                              onChange={e => setEditValue(e.target.value)}
+                              onKeyDown={e => {
+                                if (e.key === 'Enter') saveEdit();
+                                if (e.key === 'Escape') cancelEdit();
+                              }}
+                              autoFocus
+                              className="w-full border border-gray-300 rounded px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+                            />
+                          ) : (
+                            row[column.id]
+                          )}
+                        </TableCell>
+                      ))}
+
+                      <TableCell align="center" sx={{ padding: '10px 16px' }}>
+                        {editId === row._id ? (
                           <button
-                            onClick={() => startEdit(row)}
-                            className="text-teal-900 p-2 rounded border transition border-teal-700"
-                            title="Edit"
+                            onClick={saveEdit}
+                            className="bg-teal-600 text-white p-2 rounded hover:bg-teal-500 transition duration-200"
+                            title="Save"
                           >
-                            <BsFillPencilFill />
+                            <BsCheckLg />
                           </button>
-                          <button
-                            onClick={() => onDelete?.(row._id)}
-                            className="text-teal-900 p-2 rounded border transition border-teal-700"
-                            title="Delete"
-                          >
-                            <BsFillTrashFill />
-                          </button>
-                        </div>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                ))}
+                        ) : (
+                          <div className="flex justify-center gap-3">
+                            <button
+                              onClick={() => startEdit(row)}
+                              className="text-teal-900 p-2 rounded border transition border-teal-700"
+                              title="Edit"
+                            >
+                              <BsFillPencilFill />
+                            </button>
+                            <button
+                              onClick={() => onDelete?.(row._id)}
+                              className="text-teal-900 p-2 rounded border transition border-teal-700"
+                              title="Delete"
+                            >
+                              <BsFillTrashFill />
+                            </button>
+                          </div>
+                        )}
+                      </TableCell>
+                    </TableRow>
+                  ))
+              )}
             </TableBody>
           </Table>
         </TableContainer>
