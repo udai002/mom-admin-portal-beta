@@ -53,7 +53,6 @@ function MyForm() {
             if (res) {
                 setFormData({
                     imageUrl: '',
-                
                     medicine_name: '',
                     price: '',
                     prescriptionDrug: false,

@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 
 const columns = [
   { id: "_id", label: "Sub-Category ID", minWidth: 70 },
+  { id: 'imageUrl', label: 'Image', minWidth: 100 },
   { id: "subcategory_name", label: "Sub-Category", minWidth: 100 },
 ];
 
@@ -61,12 +62,12 @@ function SubCategories() {
     try {
       let url = "http://localhost:3000/api/medicines/subcategories";
       if (id) {
-      
+
         url = `http://localhost:3000/api/medicines/subcategories?categoryId=${id}`;
       }
       const res = await fetch(url);
       let data = await res.json();
-    
+
       if (!Array.isArray(data)) {
         data = [];
       }
@@ -86,7 +87,7 @@ function SubCategories() {
     const catId = event.target.value;
     setSelectedCategoryId(catId);
     await fetchSubCategories(catId);
-    setSearchValue(""); 
+    setSearchValue("");
   };
 
 
@@ -116,25 +117,37 @@ function SubCategories() {
     }
   };
 
-  const handleEditSave = async (id, newName) => {
+  const handleEditSave = async (id, updatedData) => {
+
+
+     const fd = new FormData();
+    Object.entries(formData).forEach(([k, v]) => {
+      if (k === "imageFile") {
+        if (v) fd.append("imageUrl", v);
+      } else {
+        fd.append(k, v);
+      }
+    });
+
     try {
       const response = await fetch(
         `http://localhost:3000/api/medicines/subcategories/${id}`,
         {
           method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ subcategory_name: newName }),
+          body: fd
         }
       );
+  
       if (response.ok) {
+          const data = await response.json();
         setSubCategories((prev) =>
           prev.map((item) =>
-            item._id === id ? { ...item, subcategory_name: newName } : item
+            item._id === id ? { ...item, ...data } : item
           )
         );
         setFilteredSubCategories((prev) =>
           prev.map((item) =>
-            item._id === id ? { ...item, subcategory_name: newName } : item
+            item._id === id ? { ...item, ...data } : item
           )
         );
       } else {
@@ -145,47 +158,48 @@ function SubCategories() {
     }
   };
 
- 
+
+
   return (
 
-      <div className="max-w-6xl mx-auto p-6 md:p-10">
-        <h1 className="text-3xl font-bold text-teal-600 text-center mb-8">Sub-Categories</h1>
+    <div className="max-w-6xl mx-auto p-6 md:p-10">
+      <h1 className="text-3xl font-bold text-teal-600 text-center mb-8">Sub-Categories</h1>
 
-        {/* Filter + Search Section */}
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-6">
-          <div className="flex flex-col gap-2 w-full md:w-auto">
-            <label className="text-gray-700 font-semibold">Filter by Category</label>
-            <select
-              value={selectedCategoryId}
-              onChange={handleCategoryChange}
-              className="border border-teal-300 rounded-lg px-4 py-2 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-teal-400"
-            >
-              <option value="">All Categories</option>
-              {categories.map((cat) => (
-                <option key={cat._id} value={cat._id}>
-                  {cat.category_name}
-                </option>
-              ))}
-            </select>
-          </div>
 
-          <CategoryHeader
-            searchValue={searchValue}
-            onSearchChange={handleSearchChange}
-          />
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 mb-6">
+        <div className="flex flex-col gap-2 w-full md:w-auto">
+          <label className="text-gray-700 font-semibold">Filter by Category</label>
+          <select
+            value={selectedCategoryId}
+            onChange={handleCategoryChange}
+            className="border border-teal-300 rounded-lg px-4 py-2 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-teal-400"
+          >
+            <option value="">All Categories</option>
+            {categories.map((cat) => (
+              <option key={cat._id} value={cat._id}>
+                {cat.category_name}
+              </option>
+            ))}
+          </select>
         </div>
 
-        {/* Table */}
-        <div className="mt-4">
-          <SubReusableTable
-            columns={columns}
-            rows={filteredSubCategories}
-            onDelete={handleDelete}
-            onEditSave={handleEditSave}
-          />
-        </div>
+        <CategoryHeader
+          searchValue={searchValue}
+          onSearchChange={handleSearchChange}
+        />
       </div>
-  
+
+      {/* Table */}
+      <div className="mt-4">
+        <SubReusableTable
+          columns={columns}
+          rows={filteredSubCategories}
+          onDelete={handleDelete}
+          onEditSave={handleEditSave}
+        />
+      </div>
+    </div>
+
   );
 }
 

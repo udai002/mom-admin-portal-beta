@@ -3,7 +3,9 @@ import React, { useState, useEffect } from 'react';
 function SubForms() {
   const [formData, setFormData] = useState({
     subcategory_name: '',
-    category: ''
+    category: '',
+    imageFile: null,
+    imageUrl: ''
   });
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -27,29 +29,45 @@ function SubForms() {
   };
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prevState => ({
-      ...prevState,
-      [name]: value
-    }));
+    const { name, value, type, files } = e.target;
+    if (type === 'file') {
+      const file = files[0];
+      if (file) {
+        setFormData(prevData => ({
+          ...prevData,
+          imageFile: file,
+          imageUrl: URL.createObjectURL(file)
+        }));
+      }
+    } else {
+      setFormData(prevData => ({
+        ...prevData,
+        [name]: value
+      }));
+    }
   };
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
+      const data = new FormData();
+      data.append('subcategory_name', formData.subcategory_name);
+      data.append('category', formData.category);
+      if (formData.imageFile) {
+        data.append('imageUrl', formData.imageFile);
+      }
+
       const response = await fetch('http://localhost:3000/api/medicines/subcategories', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
+        body: data,
       });
       if (response.ok) {
-        const data = await response.json();
         setFormData({
           subcategory_name: '',
-          category: ''
+          category: '',
+          imageFile: null,
+          imageUrl: ''
         });
         alert('Subcategory created successfully!');
       } else {
@@ -76,6 +94,28 @@ function SubForms() {
             </div>
             <form onSubmit={handleSubmit} className="divide-y divide-gray-200">
               <div className="py-8 text-base leading-6 space-y-4 text-gray-700 sm:text-lg sm:leading-7">
+
+                {/* Image Upload */}
+                <div className="col-span-2">
+                  <label className="block text-gray-700 font-medium mb-2">
+                    Medicine Image
+                  </label>
+                  {formData.imageUrl && (
+                    <img
+                      src={formData.imageUrl}
+                      alt="Subcategory"
+                      className="w-24 h-24 object-cover rounded mb-3"
+                    />
+                  )}
+                  <input
+                    type="file"
+                    name="imageFile"
+                    accept="image/*"
+                    onChange={handleChange}
+                    className="w-full border border-gray-300 p-2 rounded focus:outline-teal-600"
+                  />
+                </div>
+
                 <div className="flex flex-col">
                   <label className="leading-loose">SubCategory Name</label>
                   <input
@@ -88,7 +128,7 @@ function SubForms() {
                     required
                   />
                 </div>
-                
+
                 <div className="flex flex-col">
                   <label className="leading-loose">Category</label>
                   <select
@@ -106,14 +146,13 @@ function SubForms() {
                   </select>
                 </div>
               </div>
-              
+
               <div className="pt-4 flex items-center space-x-4">
                 <button
                   type="submit"
                   disabled={loading}
-                  className={`bg-teal-500 flex justify-center items-center w-full text-white px-4 py-3 rounded-md focus:outline-none ${
-                    loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-teal-600'
-                  }`}
+                  className={`bg-teal-500 flex justify-center items-center w-full text-white px-4 py-3 rounded-md focus:outline-none ${loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-teal-600'
+                    }`}
                 >
                   {loading ? 'Creating...' : 'Create SubCategory'}
                 </button>

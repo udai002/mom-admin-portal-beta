@@ -154,15 +154,16 @@ export default function StickyHeadTable() {
 
   return (
     <div className="container mx-auto p-4  ]">
+            <div className="text-center text-xl font-bold text-[#00a99d] mb-6">
+        <h1>Medicine Details</h1>
+      </div>
       <div className="m-5 mt-8 flex justify-start ">
-        <TextField
-          label="Search for users"
-          
-          onChange={handleFilter}
-          fullWidth
-          sx={{ maxWidth: 400  }}
-          className="border-teal-800 border-10 shadow-xl border-radius-30px"
-        />
+<input
+        type="text" 
+        placeholder="Search..."
+        onChange={handleFilter}
+          className="border border-teal-300 rounded-lg px-4 py-2 w-full md:w-72 shadow-sm focus:ring-2 focus:ring-teal-400 outline-none transition"
+      />  
       </div>
       {loading && <CircularProgress sx={{ display: 'block', margin: '20px auto' }} />}
       {error && (
@@ -171,7 +172,7 @@ export default function StickyHeadTable() {
         </Alert>
       )}
       <div className="rounded-xl shadow-xl mt-10  ">
-        <Paper sx={{ width: '100%', overflow: 'hidden', boxShadow: 'none' ,border:'2px solid #00a99d',borderRadius: '12px', color:'white'}}>
+        <Paper sx={{ width: '100%', overflow: 'hidden', boxShadow: 'none', borderRadius: '12px', color:'white'}}>
           <TableContainer sx={{ maxHeight: 520 }}>
             <Table stickyHeader aria-label="sticky table">
               <TableHead>

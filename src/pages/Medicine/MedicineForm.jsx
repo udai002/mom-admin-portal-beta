@@ -1,5 +1,5 @@
 import React from 'react'
-import Form from '../components/Medicines/Forms'
+import Form from '../../components/Medicines/Forms'
 
 export default function MedicineForm() {
   return (

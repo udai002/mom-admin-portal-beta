@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import MedicineForm from "../components/Medicines/MedicineUpdateForm";
+import MedicineForm from "../../components/Medicines/MedicineUpdateForm";
 
 
 export default function UpdateMedicinePage() {

@@ -1,13 +1,13 @@
 import './App.css'
 import { Route, Routes } from 'react-router'
 import CustomizedTables from './components/customisedtable';
-import MedicinesCategory from './pages/MedicinesCategory'
+import MedicinesCategory from './pages/Medicine/MedicinesCategory'
 import Category from './pages/Categores/CustomizedTables'
 import SubCategory from './pages/Categores/sub'
 import Forms from './pages/Categores/forms'
-import MedicineForm from './pages/MedicineForm'
+import MedicineForm from './pages/Medicine/MedicineForm'
 import SubForms from './pages/Categores/SubForms'
-import UpdatedForm from './pages/Updatedform'
+import UpdatedForm from './pages/Medicine/Updatedform'
 
 function App() {
   return (

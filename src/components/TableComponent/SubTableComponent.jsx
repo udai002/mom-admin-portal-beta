@@ -16,8 +16,10 @@ export default function SubReusableTable({
   const [rowsPerPage, setRowsPerPage] = React.useState(rowsPerPageOptions[0]);
   const [editId, setEditId] = React.useState(null);
   const [editValue, setEditValue] = React.useState('');
+  const [editImage, setEditImage] = React.useState(null); // Image state
 
   const handleChangePage = (_, newPage) => setPage(newPage);
+
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(+event.target.value);
     setPage(0);
@@ -25,21 +27,43 @@ export default function SubReusableTable({
 
   const startEdit = (row) => {
     setEditId(row._id);
-    setEditValue(row.subcategory_name); // customized for subcategory
+    setEditValue(row.subcategory_name);
+    setEditImage(null);
   };
 
   const cancelEdit = () => {
     setEditId(null);
     setEditValue('');
+    setEditImage(null);
   };
 
-  const saveEdit = () => {
-    if (onEditSave && editId) {
-      onEditSave(editId, editValue);
+  const saveEdit = async () => {
+  let imageUrl = '';
+
+  if (editImage) {
+    try {
+      imageUrl = await uploadToCloudinary(editImage);
+    } catch (error) {
+      alert('Image upload failed');
+      return;
     }
-    setEditId(null);
-    setEditValue('');
-  };
+  } else {
+
+    const currentRow = rows.find((row) => row._id === editId);
+    imageUrl = currentRow?.imageUrl || '';
+  }
+
+  if (onEditSave && editId) {
+    await onEditSave(editId, {
+      subcategory_name: editValue,
+      imageUrl: imageUrl,
+    });
+  }
+
+  cancelEdit();
+};
+
+
 
   const columnsWithActions = [
     ...columns,
@@ -88,38 +112,90 @@ export default function SubReusableTable({
             <TableBody>
               {rows
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, idx) => (
+                .map((row) => (
                   <TableRow
                     hover
-                    key={idx}
+                    key={row._id}
                     sx={{ '&:hover': { backgroundColor: '#f0fdfa' } }}
                   >
-                    {columns.map((column) => (
-                      <TableCell
-                        key={column.id}
-                        align={column.align || 'left'}
-                        sx={{
-                          fontSize: 14,
-                          padding: '10px 16px',
-                          color: '#333',
-                        }}
-                      >
-                        {column.id === 'subcategory_name' && editId === row._id ? (
-                          <input
-                            value={editValue}
-                            onChange={e => setEditValue(e.target.value)}
-                            onKeyDown={e => {
-                              if (e.key === 'Enter') saveEdit();
-                              if (e.key === 'Escape') cancelEdit();
-                            }}
-                            autoFocus
-                            className="w-full border border-gray-300 rounded px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
-                          />
-                        ) : (
-                          row[column.id]
-                        )}
-                      </TableCell>
-                    ))}
+                    {columns.map((column) => {
+                      const isEditing = editId === row._id;
+
+                      if (column.id === 'subcategory_name') {
+                        return (
+                          <TableCell key={column.id}>
+                            {isEditing ? (
+                              <input
+                                value={editValue}
+                                onChange={(e) => setEditValue(e.target.value)}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter') saveEdit();
+                                  if (e.key === 'Escape') cancelEdit();
+                                }}
+                                autoFocus
+                                className="w-full border border-gray-300 rounded px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-teal-500"
+                              />
+                            ) : (
+                              row[column.id]
+                            )}
+                          </TableCell>
+                        );
+                      }
+
+                      if (column.id === 'imageUrl') {
+                        return (
+                          <TableCell key={column.id}>
+                            {isEditing ? (
+                              <div className="flex flex-col gap-2">
+                                <input
+                                  type="file"
+                                  accept="image/*"
+                                  onChange={(e) => {
+                                    const file = e.target.files[0];
+                                    if (file) {
+                                      setEditImage(file);
+                                    }
+                                  }}
+                                  className="text-sm"
+                                />
+                                <img
+                                  src={
+                                    editImage
+                                      ? URL.createObjectURL(editImage)
+                                      : row[column.id]
+                                  }
+                                  alt="Preview"
+                                  style={{
+                                    width: '60px',
+                                    height: '60px',
+                                    objectFit: 'cover',
+                                    borderRadius: '6px',
+                                    border: '1px solid #ccc',
+                                  }}
+                                />
+                              </div>
+                            ) : (
+                              <img
+                                src={row[column.id]}
+                                alt="Subcategory"
+                                style={{
+                                  width: '60px',
+                                  height: '60px',
+                                  objectFit: 'cover',
+                                  borderRadius: '6px',
+                                }}
+                              />
+                            )}
+                          </TableCell>
+                        );
+                      }
+
+                      return (
+                        <TableCell key={column.id}>
+                          {row[column.id]}
+                        </TableCell>
+                      );
+                    })}
 
                     <TableCell align="center" sx={{ padding: '10px 16px' }}>
                       {editId === row._id ? (
