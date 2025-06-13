@@ -73,7 +73,7 @@ export default function UpdateMedicinePage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.message || "Update failed");
       alert("Medicine updated!");
-      navigate("/");
+      navigate("/medicines");
     } catch (err) {
       console.error(err);
       alert("Update error: " + err.message);

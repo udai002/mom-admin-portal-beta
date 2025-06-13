@@ -1,5 +1,5 @@
 import { Stack, TextField, Button } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import SubReusableTable from "../../components/TableComponent/SubTableComponent";
 import * as React from "react";
 import { useState, useEffect } from "react";
@@ -39,6 +39,7 @@ function SubCategories() {
   const [filteredSubCategories, setFilteredSubCategories] = useState([]);
   const [selectedCategoryId, setSelectedCategoryId] = useState("");
   const [searchValue, setSearchValue] = useState("");
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     fetchCategories();
@@ -121,47 +122,43 @@ function SubCategories() {
   };
 
   const handleEditSave = async (id, updatedData) => {
-
-
-     const fd = new FormData();
-    Object.entries(formData).forEach(([k, v]) => {
+    const fd = new FormData();
+    Object.entries(updatedData).forEach(([k, v]) => {
       if (k === "imageFile") {
-        if (v) fd.append("imageUrl", v);
+        if (v) fd.append("imageUrl", v); 
       } else {
         fd.append(k, v);
       }
     });
-
+    setLoading(true);
+  
     try {
       const response = await fetch(
         `http://localhost:3000/api/medicines/subcategories/${id}`,
         {
           method: "PUT",
-          body: fd
+          body: fd,
         }
       );
   
       if (response.ok) {
-          const data = await response.json();
+        const data = await response.json();
         setSubCategories((prev) =>
-          prev.map((item) =>
-            item._id === id ? { ...item, ...data } : item
-          )
+          prev.map((item) => (item._id === id ? { ...item, ...data } : item))
         );
         setFilteredSubCategories((prev) =>
-          prev.map((item) =>
-            item._id === id ? { ...item, ...data } : item
-          )
+          prev.map((item) => (item._id === id ? { ...item, ...data } : item))
         );
       } else {
         alert("Failed to update sub-category");
       }
     } catch (error) {
       alert("Error updating sub-category");
-    }
+      
+    }finally {
+    setLoading(false);
+  }
   };
-
-
 
   return (
 
@@ -199,6 +196,7 @@ function SubCategories() {
           rows={filteredSubCategories}
           onDelete={handleDelete}
           onEditSave={handleEditSave}
+          loading={loading}
         />
       </div>
     </div>

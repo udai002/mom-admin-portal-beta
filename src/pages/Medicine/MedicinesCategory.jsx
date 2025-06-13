@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router";
-import DeleteAlert from "../../components/Medicines/Deletealert";
-import { BsFillTrashFill, BsFillPencilFill } from "react-icons/bs";
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router';
+import DeleteAlert from '../../components/Medicines/Deletealert';
+import { BsFillTrashFill, BsFillPencilFill } from 'react-icons/bs';
 
 const PaginatedTable = () => {
   const Navigate = useNavigate();

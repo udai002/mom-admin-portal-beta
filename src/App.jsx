@@ -34,14 +34,14 @@ function App() {
         {/* <Route element={<MainLayout />} > */}
           <Route path='/' element={<Home />} />
           <Route path='/deliveryboys' element={<DeliveryBoyDetails />} />
-              <Route path='/dashboard' Component={Dashboard} />
-        <Route path='/orders' Component={Orders} />
-        <Route path='/orders/:orderId' Component={ViewDetail} />
-        <Route path='/feedback' Component={Feedback} />
-        <Route path='/ResolveDetail/:userId/:username/:email/:suggestionType/:createdAt/:suggestion' Component={ResolveDetail} />
-        <Route path='/donarreport' element={<BloodDonarReport />} />
-          
-           <Route path='/users' Component={CustomizedTables} />
+          <Route path='/dashboard' Component={Dashboard} />
+          <Route path='/orders' Component={Orders} />
+          <Route path='/orders/:orderId' Component={ViewDetail} />
+          <Route path='/feedback' Component={Feedback} />
+          <Route path='/ResolveDetail/:userId/:username/:email/:suggestionType/:createdAt/:suggestion' Component={ResolveDetail} />
+          <Route path='/donarreport' element={<BloodDonarReport />} />
+
+          <Route path='/users' Component={CustomizedTables} />
           <Route path='/medicines' Component={MedicinesCategory} />
           <Route path='/category' Component={Category} />
           <Route path='/subCategory' Component={SubCategory} />
@@ -49,7 +49,7 @@ function App() {
           <Route path='/medicineform' Component={MedicineForm} />
           <Route path='/sub-forms' Component={SubForms} />
           <Route path='/Updatedform/:id' Component={UpdatedForm} />
-          
+
         {/* </Route> */}
       </Routes>
     </AdminProvider>
