@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import Swal from "sweetalert2";
+
 
 function SubForms() {
   const [formData, setFormData] = useState({
@@ -27,6 +29,18 @@ function SubForms() {
       console.error('Error fetching categories:', error);
     }
   };
+
+  const addalert = () => {
+          Swal.fire({
+    position: "center",
+    icon: "success",
+    title: "Subcategory Added Successfully",
+    showConfirmButton: false,
+    timer: 2700,
+    background:"#D5ECE9",
+    
+  });
+      }
 
   const handleChange = (e) => {
     const { name, value, type, files } = e.target;
@@ -58,22 +72,25 @@ function SubForms() {
         data.append('imageUrl', formData.imageFile);
       }
 
+  
+      
+
       const response = await fetch('http://localhost:3000/api/medicines/subcategories', {
         method: 'POST',
         body: data,
       });
-      if (response.ok) {
-        setFormData({
-          subcategory_name: '',
-          category: '',
-          imageFile: null,
-          imageUrl: ''
-        });
-        alert('Subcategory created successfully!');
-      } else {
-        console.error('Failed to create subcategory');
-        alert('Failed to create subcategory. Please try again.');
-      }
+      // if (response.ok) {
+      //   setFormData({
+      //     subcategory_name: '',
+      //     category: '',
+      //     imageFile: null,
+      //     imageUrl: ''
+      //   });
+      //   alert('Subcategory created successfully!');
+      // } else {
+      //   console.error('Failed to create subcategory');
+      //   alert('Failed to create subcategory. Please try again.');
+      // }
     } catch (error) {
       console.error('Error:', error);
       alert('An error occurred. Please try again.');
@@ -149,12 +166,12 @@ function SubForms() {
 
               <div className="pt-4 flex items-center space-x-4">
                 <button
-                  type="submit"
-                  disabled={loading}
+                  type="submit" onClick={addalert}
+                  disabled={loading} 
                   className={`bg-teal-500 flex justify-center items-center w-full text-white px-4 py-3 rounded-md focus:outline-none ${loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-teal-600'
                     }`}
                 >
-                  {loading ? 'Creating...' : 'Create SubCategory'}
+                  {loading ? 'Creating...' : 'Create SubCategory' }
                 </button>
               </div>
             </form>

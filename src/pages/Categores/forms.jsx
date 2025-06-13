@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router';
 
 function MyComponent() {
   // const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -83,7 +83,7 @@ function MyComponent() {
                 <button
                   // type="submit"
                   
-                  className="bg-green-500 flex justify-center items-center w-full text-white px-4 py-3 rounded-md focus:outline-none "
+                  className="bg-[#0a99d]-500 flex justify-center items-center w-full text-white px-4 py-3 rounded-md focus:outline-none "
                   type="submit">{id ? 'Update' : 'Create'}
                 
                   Create Category

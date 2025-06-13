@@ -1,5 +1,5 @@
 import { Stack, TextField, Button } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import SubReusableTable from "../../components/TableComponent/SubTableComponent";
 import * as React from "react";
 import { useState, useEffect } from "react";
