@@ -17,6 +17,7 @@ const DashboardOptionsList = [
     {
         id: 2,
         title: "Users",
+        link:"/users"
 
     },
     {
@@ -26,7 +27,8 @@ const DashboardOptionsList = [
     },
     {
         id: 4,
-        title: "Medicines"
+        title: "Medicines",
+        link:"/medicines"
     },
     {
         id: 5,

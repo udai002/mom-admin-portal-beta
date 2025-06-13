@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import DatePicker from 'react-datepicker';
+import { useNavigate } from 'react-router';
 import 'react-datepicker/dist/react-datepicker.css';
 import CalenderSymbol from '../../assets/calendar.png';
 import SearchSymbol from '../../assets/Search.png';
-import { useNavigate } from 'react-router';
 
 function UserFeedback() {
   const navigate = useNavigate();
@@ -13,6 +12,9 @@ function UserFeedback() {
   const [search, setSearch] = useState('');
   const [filterType, setFilterType] = useState('All');
   const [selectedDate, setSelectedDate] = useState(null);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -69,12 +71,8 @@ function UserFeedback() {
       filtered = filtered.filter(item => item.isProduct);
     }
 
-    // if (selectedDate) {
-    //   const selected = new Date(selectedDate).toLocaleDateString();
-    //   filtered = filtered.filter(item => new Date(item.createdAt).toLocaleDateString() === selected);
-    // }
-
     setFilteredDetails(filtered);
+    setCurrentPage(1); // Reset to first page on new filter/search
   }, [search, filterType, selectedDate, Details]);
 
   const getStatusClass = (status) => {
@@ -103,8 +101,18 @@ function UserFeedback() {
       updated[index].status = 'resolved';
       setDetails(updated);
     }
-    
+
     navigate(`/ResolveDetail/${row._id}/${encodeURIComponent(row.userId?.name || 'N/A')}/${encodeURIComponent(row.userId?.email || 'N/A')}/${encodeURIComponent(row.suggestionType || 'N/A')}/${encodeURIComponent(row.createdAt || 'N/A')}/${encodeURIComponent(row.suggestion || 'N/A')}`);
+  };
+
+  // Pagination logic
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredDetails.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredDetails.length / itemsPerPage);
+
+  const handlePageChange = (pageNumber) => {
+    setCurrentPage(pageNumber);
   };
 
   return (
@@ -114,30 +122,6 @@ function UserFeedback() {
       </div>
 
       <div className="flex flex-wrap gap-4 items-center my-6">
-        {/* <div className="flex gap-4 flex-wrap">
-          <div className="border border-teal-500 rounded-lg px-2 py-2 flex items-center gap-2 bg-[#D5ECE9]">
-            <img src={SearchSymbol} alt="Search" className="w-5 h-5" />
-            <input
-              type="text"
-              placeholder="Search by keyword"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="outline-none bg-transparent"
-            />
-          </div>
-
-          <div className="border border-teal-500 rounded-lg px-2 py-2 flex items-center gap-2 bg-[#D5ECE9]">
-            <img src={CalenderSymbol} alt="Calendar" className="w-5 h-5" />
-            <DatePicker
-              selected={selectedDate}
-              onChange={(date) => setSelectedDate(date)}
-              placeholderText="Sort by Date"
-              className="outline-none bg-transparent"
-            />
-          </div>
-        </div> */}
-
-        {/* Dropdown instead of radio buttons */}
         <div className="ml-auto border border-teal-500 rounded-lg px-4 py-2 bg-[#D5ECE9]">
           <label className="mr-2 font-medium">Feedback Type:</label>
           <select
@@ -174,10 +158,10 @@ function UserFeedback() {
                   Loading...
                 </td>
               </tr>
-            ) : filteredDetails.length > 0 ? (
-              filteredDetails.map((row, index) => (
+            ) : currentItems.length > 0 ? (
+              currentItems.map((row, index) => (
                 <tr key={row._id} className="border-t border-[#BDE6E2] hover:bg-[#d5f4f1] transition">
-                  <td className="px-4 py-3">{index + 1}</td>
+                  <td className="px-4 py-3">{indexOfFirstItem + index + 1}</td>
                   <td className="px-4 py-3">{row.userId?.name || 'N/A'}</td>
                   <td className="px-4 py-3">{row.userId?.email || 'N/A'}</td>
                   <td className="px-4 py-3">{row.suggestionType || 'N/A'}</td>
@@ -207,6 +191,23 @@ function UserFeedback() {
           </tbody>
         </table>
       </div>
+
+      {/* Pagination Buttons */}
+      {totalPages > 1 && (
+        <div className="flex justify-center mt-6 gap-2">
+          {[...Array(totalPages)].map((_, i) => (
+            <button
+              key={i}
+              onClick={() => handlePageChange(i + 1)}
+              className={`px-3 py-1 rounded-md ${
+                currentPage === i + 1 ? 'bg-[#00A99D] text-white' : 'bg-gray-200'
+              }`}
+            >
+              {i + 1}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
