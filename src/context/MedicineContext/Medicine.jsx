@@ -1,55 +1,66 @@
-import React, { useContext, useState } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
-export const MedicineContext = React.createContext();
+const MedicineContext = createContext();
 
 export function MedicineProvider({ children }) {
-    const [medicine, setMedicine] = useState([]);
+  const [medicine, setMedicine] = useState([]);
 
-    const addMedicine = async (newMedicine) => {
-    try {
-        const formData = new FormData();
-      
-        Object.entries(newMedicine).forEach(([key, value]) => {
-          
-            if (key === 'imageFile' && value) {
-                formData.append('imageUrl', value);
-            } else if (key !== 'imageUrl') {
-                formData.append(key, value);
-            }
-        });
+  async function addCategory(name) {
+    const res = await fetch('http://localhost:3000/api/medicines/categories', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ category_name: name }),
+    });
+    return res.json();
+  }
 
-        const response = await fetch('http://localhost:3000/api/medicines/medicines', {
-            method: 'POST',
-            body: formData 
-        });
+  async function addSubCategory({ name, categoryId, imageFile }) {
+    const form = new FormData();
+    form.append('subcategory_name', name);
+    form.append('category', categoryId);
+    form.append('imageUrl', imageFile);
+    const res = await fetch('http://localhost:3000/api/medicines/subcategories', {
+      method: 'POST',
+      body: form,
+    });
+    return res.json();
+  }
 
-        if (response.ok) {
-            const data = await response.json();
-            setMedicine(prev => [...prev, data]);
-            return true;
-        } else {
-            console.error('Error:', response.statusText);
-            return false;
-        }
-    } catch (error) {
-        console.error('Fetch Error:', error);
-        return false;
-    }
-};
+  async function addMedicine(formData) {
+    const res = await fetch('http://localhost:3000/api/medicines/medicines', {
+      method: 'POST',
+      body: formData,
+    });
+    const data = await res.json();
+    setMedicine(prev => [...prev, data]);
+    return data;
+  }
 
-    return (
-        <MedicineContext.Provider value={{ medicine, setMedicine, addMedicine }}>
-            {children}
-        </MedicineContext.Provider>
-    );
+  const fetchCategories = () => fetch('http://localhost:3000/api/medicines/categories').then(r => r.json());
+  const fetchSubCategories = categoryId =>
+    fetch(`http://localhost:3000/api/medicines/categories/${categoryId}/subcategories`).then(r => r.json());
+  const fetchMedicines = () =>
+    fetch('http://localhost:3000/api/medicines/medicines').then(r => r.json());
+
+  return (
+    <MedicineContext.Provider
+      value={{
+        medicine,
+        addCategory,
+        addSubCategory,
+        addMedicine,
+        fetchCategories,
+        fetchSubCategories,
+        fetchMedicines,
+      }}
+    >
+      {children}
+    </MedicineContext.Provider>
+  );
 }
 
-const useMedicine = () => {
-    const context = useContext(MedicineContext);
-    if (!context) {
-        throw new Error("Medicine context not found");
-    }
-    return context;
+export default () => {
+  const ctx = useContext(MedicineContext);
+  if (!ctx) throw new Error("Context not found");
+  return ctx;
 };
-
-export default useMedicine;
