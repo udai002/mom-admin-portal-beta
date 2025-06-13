@@ -66,14 +66,24 @@ export default function SubCategoryModal({ isOpen, onClose, categories, onAdded 
         </select>
         <input
           type="file"
+          id="imageFile"
           name="imageFile"
           accept="image/*"
           onChange={handleChange}
-          className="w-full mb-4"
+          className="hidden"
         />
+        <label
+    htmlFor="imageFile"
+    className="flex items-center justify-center w-30 px-5 py-3 bg-teal-400 text-white rounded shadow-2xl hover:bg-teal-700 cursor-pointer mb-0 mt-4 ml-0 p-5 border border-grey-700 "
+  >
+    choose file 
+  </label>
+   {form.imageFile && (
+    <p className="mt-0 text-sm text-gray-600 truncate">{form.imageFile.name}</p>
+  )}
         <button
           type="submit"
-          className="w-full bg-blue-500 text-white py-2 rounded disabled:opacity-50"
+          className="w-full mt-5 bg-teal-700 text-white py-2 rounded disabled:opacity-50"
           disabled={loading}
         >
           {loading ? 'Adding...' : 'Add SubCategory'}

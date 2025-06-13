@@ -40,7 +40,7 @@ export default function CategoryModal({ isOpen, onClose, onAdded }) {
         />
         <button
           type="submit"
-          className="w-full bg-green-500 text-white py-2 rounded disabled:opacity-50"
+          className="w-full bg-teal-700 text-white py-2 rounded disabled:opacity-50"
           disabled={loading}
         >
           {loading ? 'Adding...' : 'Add Category'}

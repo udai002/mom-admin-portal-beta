@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import useMedicine from '../../context/MedicineContext/Medicine';
 import CategoryModal from './CategoryModal';
 import SubCategoryModal from './SubCategoryModal';
-
+import Swal from "sweetalert2";
+import { MdOutlineCloudUpload } from "react-icons/md";
 export default function MyForm() {
     const {
         addMedicine,
@@ -51,6 +52,18 @@ export default function MyForm() {
         const val = type === 'checkbox' ? checked : type === 'file' ? files[0] : value;
         setFormData(prev => ({ ...prev, [name]: val }));
     };
+
+    const showALert = () => {
+        Swal.fire({
+  position: "center",
+  icon: "success",
+  title: "Medicine Added Successfully",
+  showConfirmButton: false,
+  timer: 2500,
+  background:"#D5ECE9",
+  
+});
+    }
 
     const handleSubmit = async e => {
         e.preventDefault();
@@ -155,8 +168,10 @@ export default function MyForm() {
                 </div>
 
                 {/* Image Upload */}
-                <div className="md:col-span-2 flex flex-col items-center">
+                <div className="md:col-span-2 flex flex-col items-center border border-gray-300  p-3">
                     <label className="block text-gray-700 font-semibold mb-1">Medicine Image</label>
+                    
+                     <div className="mt-7 mb-8 scale-300 shadow-2xl"><MdOutlineCloudUpload /></div>
                     <input
                         type="file"
                         name="imageFile"
@@ -165,6 +180,8 @@ export default function MyForm() {
                         required
                         className="border border-gray-300 rounded-lg px-3 py-2 w-full max-w-xs"
                     />
+                    
+                    
                 </div>
 
                 {/* Medicine Name */}
@@ -341,7 +358,7 @@ export default function MyForm() {
                 {/* Submit Button */}
                 <div className="md:col-span-2 flex justify-center mt-4">
                     <button
-                        type="submit"
+                        type="submit" onClick={showALert}
                         className="bg-gradient-to-r from-teal-500 to-teal-700 text-white font-bold py-3 px-8 rounded-xl shadow-lg hover:from-teal-600 hover:to-teal-800 transition-all"
                     >
                         Add Medicine
