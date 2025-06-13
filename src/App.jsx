@@ -22,6 +22,7 @@ import Forms from './pages/Categores/forms'
 import MedicineForm from './pages/Medicine/MedicineForm'
 import SubForms from './pages/Categores/SubForms'
 import UpdatedForm from './pages/Medicine/Updatedform'
+import Profile from './pages/Deliveryboy/profile'
 
 
 function App() {
@@ -49,6 +50,7 @@ function App() {
           <Route path='/medicineform' Component={MedicineForm} />
           <Route path='/sub-forms' Component={SubForms} />
           <Route path='/Updatedform/:id' Component={UpdatedForm} />
+          <Route path='/DeliveryProfile/:id' Component={Profile} />
 
           </Route>
       </Routes>
