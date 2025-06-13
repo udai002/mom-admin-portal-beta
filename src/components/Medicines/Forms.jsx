@@ -28,6 +28,7 @@ export default function MyForm() {
         store: '',
         expiryDate: '',
         manufactureDate: '',
+        discountPrice:''
     });
 
     const [categories, setCategories] = useState([]);
@@ -104,6 +105,7 @@ export default function MyForm() {
             store: '',
             expiryDate: '',
             manufactureDate: '',
+            discountPrice:''
         });
     };
 
@@ -325,6 +327,17 @@ export default function MyForm() {
                         type="date"
                         name="expiryDate"
                         value={formData.expiryDate}
+                        onChange={handleChange}
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-400"
+                    />
+                </div>
+              {/* discountPrice */}
+                    <div>
+                    <label className="block text-gray-700 font-semibold mb-1">Expiry Date</label>
+                    <input
+                        type="date"
+                        name="expiryDate"
+                        value={formData.discountPrice}
                         onChange={handleChange}
                         className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-400"
                     />

@@ -13,7 +13,7 @@ import DeliveryBoyDetails from './pages/Deliveryboy/Deliverboy'
 import SideBar from './components/Sidebar/SideBar'
 import MainLayout from './components/Layouts/Layout'
 import { AdminProvider } from './context/AdminAuth'
-
+// import { Route, Routes } from 'react-router'
 import CustomizedTables from './components/customisedtable';
 import MedicinesCategory from './pages/Medicine/MedicinesCategory'
 import Category from './pages/Categores/CustomizedTables'
@@ -32,16 +32,16 @@ function App() {
       <Routes>
         <Route path='/login' element={<Login />} />
         {/* <Route element={<MainLayout />} > */}
-         / <Route path='/' element={<Home />} />
+          <Route path='/' element={<Home />}
           <Route path='/deliveryboys' element={<DeliveryBoyDetails />} />
-              <Route path='/dashboard' Component={Dashboard} />
-        <Route path='/orders' Component={Orders} />
-        <Route path='/orders/:orderId' Component={ViewDetail} />
-        <Route path='/feedback' Component={Feedback} />
-        <Route path='/ResolveDetail/:userId/:username/:email/:suggestionType/:createdAt/:suggestion' Component={ResolveDetail} />
-        <Route path='/donarreport' element={<BloodDonarReport />} />
-          
-           <Route path='/users' Component={CustomizedTables} />
+          <Route path='/dashboard' Component={Dashboard} />
+          <Route path='/orders' Component={Orders} />
+          <Route path='/orders/:orderId' Component={ViewDetail} />
+          <Route path='/feedback' Component={Feedback} />
+          <Route path='/ResolveDetail/:userId/:username/:email/:suggestionType/:createdAt/:suggestion' Component={ResolveDetail} />
+          <Route path='/donarreport' element={<BloodDonarReport />} />
+
+          <Route path='/users' Component={CustomizedTables} />
           <Route path='/medicines' Component={MedicinesCategory} />
           <Route path='/category' Component={Category} />
           <Route path='/subCategory' Component={SubCategory} />
@@ -49,7 +49,7 @@ function App() {
           <Route path='/medicineform' Component={MedicineForm} />
           <Route path='/sub-forms' Component={SubForms} />
           <Route path='/Updatedform/:id' Component={UpdatedForm} />
-          
+
         {/* </Route> */}
       </Routes>
     </AdminProvider>

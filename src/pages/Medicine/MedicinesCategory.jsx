@@ -27,14 +27,14 @@ const PaginatedTable = () => {
 
     try {
       await fetch(`http://localhost:3000/api/medicines/medicines/${id}`, {
-        method: 'DELETE',
+        method: "DELETE",
       });
 
-      const updatedData = data.filter(item => item._id !== id);
+      const updatedData = data.filter((item) => item._id !== id);
       setData(updatedData);
       setFilteredData(updatedData);
     } catch (error) {
-      console.error('Error deleting medicine:', error);
+      console.error("Error deleting medicine:", error);
     }
   };
 
@@ -43,10 +43,19 @@ const PaginatedTable = () => {
     fetchSubCategory();
   }, []);
 
+
+  const discount = (markedPrice, sellingPrice) => {
+  if (!markedPrice || !sellingPrice || markedPrice <= 0) return 0;
+  const discountAmount = markedPrice - sellingPrice;
+  return `${((discountAmount / markedPrice) * 100).toFixed(2)}%`;
+};
   const fetchMedicines = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/medicines/medicines");
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+      const response = await fetch(
+        "http://localhost:3000/api/medicines/medicines"
+      );
+      if (!response.ok)
+        throw new Error(`HTTP error! status: ${response.status}`);
       const json = await response.json();
       setData(json);
       setFilteredData(json);
@@ -57,7 +66,9 @@ const PaginatedTable = () => {
 
   const fetchSubCategory = async () => {
     try {
-      const response = await fetch("http://localhost:3000/api/medicine/subcategories");
+      const response = await fetch(
+        "http://localhost:3000/api/medicine/subcategories"
+      );
       if (response.ok) {
         const data = await response.json();
         setSubCategory(data);
@@ -69,9 +80,25 @@ const PaginatedTable = () => {
     }
   };
 
+  // const fetchCategories = async () => {
+  //   try {
+  //     const response = await fetch("http://localhost:3000/api/medicines/categories");
+  //     if (response.ok) {
+  //     const data = await response.json();
+  //     setCategory(data);
+  //     } else {
+  //     console.error("Failed to fetch categories");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching categories:", error);
+  //   }
+  // };
+
   const SingleSubCategory = async (id) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/medicine/subcategories/${id}`);
+      const response = await fetch(
+        `http://localhost:3000/api/medicine/subcategories/${id}`
+      );
       if (response.ok) {
         const data = await response.json();
         setSingleCategory(data);
@@ -88,7 +115,9 @@ const PaginatedTable = () => {
       setFilteredData(data);
       setSingleCategory("");
     } else {
-           const filtered = data.filter((item) => item.subcategories?.includes(subCatId));
+      const filtered = data.filter((item) =>
+        item.subcategories?.includes(subCatId)
+      );
       setFilteredData(filtered);
       await SingleSubCategory(subCatId);
     }
@@ -156,12 +185,16 @@ const PaginatedTable = () => {
                 "Ingredients",
                 "Dose",
                 "Manufacturer",
+
                 "Not For",
                 "Side Effects",
                 "Store",
                 "Expiry",
                 "Manufactured",
+                "DiscountPrice",
                 "Discount",
+                "Category",
+                "SubCategory",
                 "Actions",
               ].map((title, index) => (
                 <th key={index} className="px-4 py-3 whitespace-nowrap">
@@ -170,7 +203,7 @@ const PaginatedTable = () => {
               ))}
             </tr>
           </thead>
-        <tbody className="divide-y divide-gray-200">
+          <tbody className="divide-y divide-gray-200">
             {currentItems.length === 0 ? (
               <tr>
                 <td colSpan={16} className="text-center py-8 text-gray-500">
@@ -179,7 +212,10 @@ const PaginatedTable = () => {
               </tr>
             ) : (
               currentItems?.map((item) => (
-                <tr key={item._id} className="hover:bg-teal-50 transition-all duration-200">
+                <tr
+                  key={item._id}
+                  className="hover:bg-teal-50 transition-all duration-200"
+                >
                   <td className="px-4 py-2">
                     <img
                       src={item?.imageUrl}
@@ -209,6 +245,13 @@ const PaginatedTable = () => {
                   <td className="px-4 py-2" title={item?.manufacturer}>
                     {item?.manufacturer?.slice(0, 10)}...
                   </td>
+                  {/* Category */}
+
+                  {/* <td className="px-4 py-2" title={item?.category}>
+                    {item?.category?.slice ? item?.category?.slice(0, 10) + "..." : ""}
+                  </td>
+                  {/* Sub-Categories */}
+
                   <td className="px-4 py-2" title={item?.not_for}>
                     {item?.not_for?.slice(0, 10)}...
                   </td>
@@ -220,7 +263,31 @@ const PaginatedTable = () => {
                   </td>
                   <td className="px-4 py-2">{item?.expiry_date}</td>
                   <td className="px-4 py-2">{item?.manufacture_date}</td>
-                  <td className="px-4 py-2">{item?.discount}</td>
+                   
+                  <td className="px-4 py-2">{item.discounted_price?item.discounted_price:item.price}</td>
+
+                  <td className="px-4 py-2">
+                      {discount(item.price, item.discounted_price)}
+                  </td>
+
+                  <td>
+                    {item.subcategories && Array.isArray(item.subcategories)
+                      ? [
+                          ...new Set(
+                            item.subcategories.map(
+                              (sub) => sub.category.category_name
+                            )
+                          ),
+                        ].join(", ")
+                      : ""}
+                  </td>
+                  <td>
+                    {item.subcategories && Array.isArray(item.subcategories)
+                      ? item.subcategories
+                          .map((sub) => sub.subcategory_name)
+                          .join(", ")
+                      : ""}
+                  </td>
                   <td className="px-4 py-2 flex gap-2">
                     <button
                       onClick={() => Navigate(`/Updatedform/${item._id}`)}
@@ -260,7 +327,9 @@ const PaginatedTable = () => {
 
         <button
           onClick={() => handlePageChange(currentPage + 1)}
-          disabled={currentPage === Math.ceil(filteredData.length / itemsPerPage)}
+          disabled={
+            currentPage === Math.ceil(filteredData.length / itemsPerPage)
+          }
           className="px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-lg shadow disabled:opacity-50 disabled:cursor-not-allowed transition"
         >
           Next
