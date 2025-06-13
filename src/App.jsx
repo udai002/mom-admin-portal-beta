@@ -1,6 +1,6 @@
 import './App.css'
 
-import { Route, Routes, BrowserRouter as Router } from 'react-router-dom'
+import { Route, Routes, BrowserRouter as Router } from 'react-router'
 import Orders from './pages/Orders/orders'
 import Feedback from './pages/Feedback/UserFeedback'
 import { Dashboard } from './pages/DashBoard/Dashboard'
@@ -13,7 +13,7 @@ import DeliveryBoyDetails from './pages/Deliveryboy/Deliverboy'
 import SideBar from './components/Sidebar/SideBar'
 import MainLayout from './components/Layouts/Layout'
 import { AdminProvider } from './context/AdminAuth'
-import { Route, Routes } from 'react-router'
+// import { Route, Routes } from 'react-router'
 import CustomizedTables from './components/customisedtable';
 import MedicinesCategory from './pages/Medicine/MedicinesCategory'
 import Category from './pages/Categores/CustomizedTables'
@@ -31,7 +31,7 @@ function App() {
     <AdminProvider>
       <Routes>
         <Route path='/login' element={<Login />} />
-        <Route element={<MainLayout />} >
+        {/* <Route element={<MainLayout />} > */}
           <Route path='/' element={<Home />} />
           <Route path='/deliveryboys' element={<DeliveryBoyDetails />} />
               <Route path='/dashboard' Component={Dashboard} />
@@ -50,7 +50,7 @@ function App() {
           <Route path='/sub-forms' Component={SubForms} />
           <Route path='/Updatedform/:id' Component={UpdatedForm} />
           
-        </Route>
+        {/* </Route> */}
       </Routes>
     </AdminProvider>
   )
