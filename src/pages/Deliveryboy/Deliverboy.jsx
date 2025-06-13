@@ -3,11 +3,16 @@ import DataTable from "react-data-table-component";
 import { FaRegEdit } from "react-icons/fa";
 import { CgProfile } from "react-icons/cg";
 import { IoMdSearch } from "react-icons/io";
+import profile from "./profile";
+import { useNavigate } from "react-router";
 
 
 export default function DeliveryBoyDetails() {
   const [data, setData] = useState([]);
   const [searchText, setSearchText] = useState('');
+
+  const navigate = useNavigate()
+
 
   useEffect(() => {
     fetch("http://localhost:3000/delivery/alldelivery/")
@@ -20,6 +25,12 @@ export default function DeliveryBoyDetails() {
     setSearchText(event.target.value);
   };
 
+    const handleImageClick = (row) => {
+    navigate(`/DeliveryProfile/${row._id}`)
+    console.log("profile", row);
+  }
+
+ 
   const filteredData = data.filter((row) => {
     return (
       row.name?.toLowerCase().includes(searchText.toLowerCase()) ||
@@ -51,28 +62,26 @@ export default function DeliveryBoyDetails() {
         ),
     },
     { name: "Area", selector: (row) => row.area },
+   
     {
-      name: "Action",
+      name: " Profile ",
       cell: row => (
         <button
           onClick={() => handleImageClick(row)}
           style={{ padding: 0, border: 'none', background: 'none' }}
+          
         >
-          <FaRegEdit  style={{width:'20px',height:'20px'}}/>
+          <form action={profile} className="inline">
+            <button >
+               <CgProfile style={{width:'20px',height:'20px'}} />
+
+          </button>
+          </form>
         </button>
       )
     },
-    {
-      name: "User Profile",
-      cell: row => (
-        <button
-          onClick={() => handleImageClick(row)}
-          style={{ padding: 0, border: 'none', background: 'none' }}
-        >
- <CgProfile style={{width:'20px',height:'20px'}} />
-        </button>
-      )
-    },
+ 
+
 
   ];
   return (
@@ -94,7 +103,6 @@ export default function DeliveryBoyDetails() {
               padding: '5px 10px',
               minWidth: '250px',
             }}
-            
           />
         
         </div>
@@ -135,5 +143,4 @@ export default function DeliveryBoyDetails() {
         />
       </div>
     </div>
-  );
-}
+  );};
