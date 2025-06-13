@@ -1,10 +1,19 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import useMedicine from '../../context/MedicineContext/Medicine';
+import CategoryModal from './CategoryModal';
+import SubCategoryModal from './SubCategoryModal';
 
-function MyForm() {
+export default function MyForm() {
+    const {
+        addMedicine,
+        fetchCategories,
+        fetchSubCategories,
+    } = useMedicine();
+
     const [formData, setFormData] = useState({
-        imageUrl: '',
-        
+        categoryId: '',
+        subCategoryId: '',
+        imageFile: null,
         medicine_name: '',
         price: '',
         prescriptionDrug: false,
@@ -18,252 +27,347 @@ function MyForm() {
         store: '',
         expiryDate: '',
         manufactureDate: '',
-        subCategory: ["681f32424863d05779fb5bac"]
+        discountPrice:''
     });
 
-    const { addMedicine } = useMedicine();
+    const [categories, setCategories] = useState([]);
+    const [subcategories, setSubcategories] = useState([]);
+    const [showCategoryModal, setShowCategoryModal] = useState(false);
+    const [showSubCategoryModal, setShowSubCategoryModal] = useState(false);
 
-    const handleChange = (event) => {
-        const { name, value, type, checked, files } = event.target;
-        if (type === 'checkbox') {
-            setFormData(prevData => ({
-                ...prevData,
-                [name]: checked
-            }));
-        } else if (type === 'file') {
-            const file = files[0];
-            if (file) {
-                setFormData(prevData => ({
-                    ...prevData,
-                    imageFile: file,
-                    imageUrl: URL.createObjectURL(file) 
-                }));
-            }
-        } else {
-            setFormData(prevData => ({
-                ...prevData,
-                [name]: value
-            }));
-        }
+    useEffect(() => {
+        fetchCategories().then(setCategories);
+    }, []);
+
+    useEffect(() => {
+        if (formData.categoryId)
+            fetchSubCategories(formData.categoryId).then(setSubcategories);
+        else
+            setSubcategories([]);
+    }, [formData.categoryId]);
+
+    const handleChange = e => {
+        const { name, type, checked, files, value } = e.target;
+        const val = type === 'checkbox' ? checked : type === 'file' ? files[0] : value;
+        setFormData(prev => ({ ...prev, [name]: val }));
     };
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        addMedicine(formData).then((res) => {
-            if (res) {
-                setFormData({
-                    imageUrl: '',
-                    medicine_name: '',
-                    price: '',
-                    prescriptionDrug: false,
-                    description: '',
-                    use: '',
-                    ingredients: '',
-                    dose: '',
-                    manufacturer: '',
-                    notFor: '',
-                    sideEffects: '',
-                    store: '',
-                    expiryDate: '',
-                    manufactureDate: '',
-                    subCategory: ["681f32424863d05779fb5bac"]
-                });
-            }
+    const handleSubmit = async e => {
+        e.preventDefault();
+
+        const fd = new FormData();
+        fd.append('imageUrl', formData.imageFile);
+        fd.append('medicine_name', formData.medicine_name);
+        fd.append('price', formData.price);
+        fd.append('prescriptionDrug', formData.prescriptionDrug);
+        fd.append('description', formData.description);
+        fd.append('use', formData.use);
+        fd.append('ingredients', formData.ingredients);
+        fd.append('dose', formData.dose);
+        fd.append('manufacturer', formData.manufacturer);
+        fd.append('notFor', formData.notFor);
+        fd.append('sideEffects', formData.sideEffects);
+        fd.append('store', formData.store);
+        fd.append('expiryDate', formData.expiryDate);
+        fd.append('manufactureDate', formData.manufactureDate);
+        fd.append('subCategory', formData.subCategoryId);
+
+        await addMedicine(fd);
+        alert('Medicine added');
+
+        setFormData({
+            categoryId: '',
+            subCategoryId: '',
+            imageFile: null,
+            medicine_name: '',
+            price: '',
+            prescriptionDrug: false,
+            description: '',
+            use: '',
+            ingredients: '',
+            dose: '',
+            manufacturer: '',
+            notFor: '',
+            sideEffects: '',
+            store: '',
+            expiryDate: '',
+            manufactureDate: '',
+            discountPrice:''
         });
     };
 
     return (
-        <div className="container mx-auto p-4 my-5 bg-white-800 rounded-lg shadow-md">
-            <h2 className="text-2xl font-bold mb-4 text-teal-700">Add Medicine</h2>
-            <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <>
+            <form
+                onSubmit={handleSubmit}
+                className="max-w-3xl mx-auto  p-3 grid grid-cols-1 md:grid-cols-2 gap-6"
+            >
+                {/* Category Select */}
+                <div>
+                    <label className="block text-gray-700 font-semibold mb-1">Category</label>
+                    <div className="flex gap-2">
+                        <select
+                            name="categoryId"
+                            value={formData.categoryId}
+                            onChange={handleChange}
+                            required
+                            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-400"
+                        >
+                            <option value="">Select category</option>
+                            {categories.map(c => (
+                                <option key={c._id} value={c._id}>{c.category_name}</option>
+                            ))}
+                        </select>
+                        <button
+                            type="button"
+                            className="text-blue-600 font-bold bg-teal-700 hover:bg-teal-800 text-white px-3 py-1 rounded-lg"
+                            onClick={() => setShowCategoryModal(true)}
+                        >
+                            + 
+                        </button>
+                    </div>
+                </div>
 
-                <div className="col-span-1 md:col-span-2">
-                    <label htmlFor="imageFile" className="block text-gray-700 text-sm font-bold mb-2">
-                        Medicine Image
-                    </label>
-                    {formData.imageUrl && (
-                        <img
-                            src={formData.imageUrl}
-                            alt="medicine"
-                            className="w-24 h-24 object-cover mb-2 rounded"
-                        />
-                    )}
+                {/* Subcategory Select */}
+                <div>
+                    <label className="block text-gray-700 font-semibold mb-1">Subcategory</label>
+                    <div className="flex gap-2">
+                        <select
+                            name="subCategoryId"
+                            value={formData.subCategoryId}
+                            onChange={handleChange}
+                            required
+                            className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-400"
+                        >
+                            <option value="">Select subcategory</option>
+                            {subcategories.map(s => (
+                                <option key={s._id} value={s._id}>{s.subcategory_name}</option>
+                            ))}
+                        </select>
+                        <button
+                            type="button"
+                            className="text-blue-600 font-bold bg-teal-700 hover:bg-teal-800 text-white px-3 py-1 rounded-lg"
+                            onClick={() => setShowSubCategoryModal(true)}
+                        >
+                            +
+                        </button>
+                    </div>
+                </div>
+
+                {/* Image Upload */}
+                <div className="md:col-span-2 flex flex-col items-center">
+                    <label className="block text-gray-700 font-semibold mb-1">Medicine Image</label>
                     <input
                         type="file"
                         name="imageFile"
-                        id="imageFile"
                         accept="image/*"
                         onChange={handleChange}
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        required
+                        className="border border-gray-300 rounded-lg px-3 py-2 w-full max-w-xs"
                     />
                 </div>
 
+                {/* Medicine Name */}
                 <div>
-                    <label className="block text-gray-700 text-sm font-bold mb-2">Medicine Name</label>
+                    <label className="block text-gray-700 font-semibold mb-1">Medicine Name</label>
                     <input
-                        type="text"
                         name="medicine_name"
                         value={formData.medicine_name}
                         onChange={handleChange}
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        placeholder="Enter Medicine Name"
                         required
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-400"
+                        placeholder="Medicine Name"
                     />
                 </div>
 
+                {/* Price */}
                 <div>
-                    <label className="block text-gray-700 text-sm font-bold mb-2">Price</label>
+                    <label className="block text-gray-700 font-semibold mb-1">Price</label>
                     <input
                         type="number"
                         name="price"
                         value={formData.price}
                         onChange={handleChange}
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        placeholder="Enter Price"
                         required
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-400"
+                        placeholder="Price"
                     />
                 </div>
 
-                <div>
-                    <label className="block text-gray-700 text-sm font-bold mb-2">Prescription Drug</label>
+                {/* Prescription Drug */}
+                <div className="flex items-center gap-2">
                     <input
                         type="checkbox"
                         name="prescriptionDrug"
                         checked={formData.prescriptionDrug}
                         onChange={handleChange}
-                        className="mr-2 leading-tight"
+                        className="h-5 w-5 text-teal-600"
                     />
+                    <label className="text-gray-700 font-semibold">Prescription Drug</label>
                 </div>
 
+                {/* Description */}
                 <div>
-                    <label className="block text-gray-700 text-sm font-bold mb-2">Description</label>
+                    <label className="block text-gray-700 font-semibold mb-1">Description</label>
                     <textarea
                         name="description"
                         value={formData.description}
                         onChange={handleChange}
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        placeholder="Enter Description"
                         required
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-400"
+                        placeholder="Description"
                     />
                 </div>
 
+                {/* Use */}
                 <div>
-                    <label className="block text-gray-700 text-sm font-bold mb-2">Use</label>
+                    <label className="block text-gray-700 font-semibold mb-1">Use</label>
                     <input
-                        type="text"
                         name="use"
                         value={formData.use}
                         onChange={handleChange}
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        placeholder="Enter Use"
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-400"
+                        placeholder="Use"
                     />
                 </div>
 
+                {/* Ingredients */}
                 <div>
-                    <label className="block text-gray-700 text-sm font-bold mb-2">Ingredients</label>
+                    <label className="block text-gray-700 font-semibold mb-1">Ingredients</label>
                     <input
-                        type="text"
                         name="ingredients"
                         value={formData.ingredients}
                         onChange={handleChange}
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        placeholder="Enter Ingredients"
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-400"
+                        placeholder="Ingredients"
                     />
                 </div>
 
+                {/* Dose */}
                 <div>
-                    <label className="block text-gray-700 text-sm font-bold mb-2">Dose</label>
+                    <label className="block text-gray-700 font-semibold mb-1">Dose</label>
                     <input
-                        type="text"
                         name="dose"
                         value={formData.dose}
                         onChange={handleChange}
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        placeholder="Enter Dose"
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-400"
+                        placeholder="Dose"
                     />
                 </div>
 
+                {/* Manufacturer */}
                 <div>
-                    <label className="block text-gray-700 text-sm font-bold mb-2">Manufacturer</label>
+                    <label className="block text-gray-700 font-semibold mb-1">Manufacturer</label>
                     <input
-                        type="text"
                         name="manufacturer"
                         value={formData.manufacturer}
                         onChange={handleChange}
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        placeholder="Enter Manufacturer"
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-400"
+                        placeholder="Manufacturer"
                     />
                 </div>
 
+                {/* Not For */}
                 <div>
-                    <label className="block text-gray-700 text-sm font-bold mb-2">Not For</label>
+                    <label className="block text-gray-700 font-semibold mb-1">Not For</label>
                     <input
-                        type="text"
                         name="notFor"
                         value={formData.notFor}
                         onChange={handleChange}
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        placeholder="Enter Not For"
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-400"
+                        placeholder="Not For"
                     />
                 </div>
 
+                {/* Side Effects */}
                 <div>
-                    <label className="block text-gray-700 text-sm font-bold mb-2">Side Effects</label>
+                    <label className="block text-gray-700 font-semibold mb-1">Side Effects</label>
                     <input
-                        type="text"
                         name="sideEffects"
                         value={formData.sideEffects}
                         onChange={handleChange}
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        placeholder="Enter Side Effects"
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-400"
+                        placeholder="Side Effects"
                     />
                 </div>
 
+                {/* Store */}
                 <div>
-                    <label className="block text-gray-700 text-sm font-bold mb-2">Store</label>
+                    <label className="block text-gray-700 font-semibold mb-1">Store</label>
                     <input
-                        type="text"
                         name="store"
                         value={formData.store}
                         onChange={handleChange}
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-                        placeholder="Enter Store"
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-400"
+                        placeholder="Store"
                     />
                 </div>
 
+                {/* Expiry Date */}
                 <div>
-                    <label className="block text-gray-700 text-sm font-bold mb-2">Expiry Date</label>
+                    <label className="block text-gray-700 font-semibold mb-1">Expiry Date</label>
                     <input
                         type="date"
                         name="expiryDate"
                         value={formData.expiryDate}
                         onChange={handleChange}
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-400"
+                    />
+                </div>
+              {/* discountPrice */}
+                    <div>
+                    <label className="block text-gray-700 font-semibold mb-1">Expiry Date</label>
+                    <input
+                        type="date"
+                        name="expiryDate"
+                        value={formData.discountPrice}
+                        onChange={handleChange}
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-400"
                     />
                 </div>
 
+                {/* Manufacture Date */}
                 <div>
-                    <label className="block text-gray-700 text-sm font-bold mb-2">Manufacture Date</label>
+                    <label className="block text-gray-700 font-semibold mb-1">Manufacture Date</label>
                     <input
                         type="date"
                         name="manufactureDate"
                         value={formData.manufactureDate}
                         onChange={handleChange}
-                        className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                        className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-teal-400"
                     />
                 </div>
 
-                <div className="col-span-1 md:col-span-2">
+                {/* Submit Button */}
+                <div className="md:col-span-2 flex justify-center mt-4">
                     <button
                         type="submit"
-                        className="bg-teal-500 hover:bg-teal-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                        className="bg-gradient-to-r from-teal-500 to-teal-700 text-white font-bold py-3 px-8 rounded-xl shadow-lg hover:from-teal-600 hover:to-teal-800 transition-all"
                     >
-                        Submit
+                        Add Medicine
                     </button>
                 </div>
             </form>
-        </div>
+
+            {/* Modals */}
+            <CategoryModal
+                isOpen={showCategoryModal}
+                onClose={() => setShowCategoryModal(false)}
+                onAdded={cat => {
+                    setCategories(prev => [...prev, cat]);
+                    setFormData(fd => ({ ...fd, categoryId: cat._id }));
+                }}
+            />
+
+            <SubCategoryModal
+                isOpen={showSubCategoryModal}
+                onClose={() => setShowSubCategoryModal(false)}
+                categories={categories}
+                onAdded={sub => {
+                    setSubcategories(prev => [...prev, sub]);
+                    setFormData(fd => ({ ...fd, subCategoryId: sub._id }));
+                }}
+            />
+        </>
     );
 }
-
-export default MyForm;
