@@ -4,6 +4,7 @@ import PieChart from '../../components/Dashboard/Pie';
 import Sales from '../../components/Dashboard/Sales';
 import PolarChart from '../../components/Dashboard/Polar';
 import '../../index.css';
+import apiClient from '../../utils/apiClient';
 
 export const Dashboard = () => {
   const [stats, setStats] = useState({ users: 0, revenue: 0, orders: 0, deliveryBoys: 0 });
@@ -16,15 +17,14 @@ export const Dashboard = () => {
       setLoading(true);
 
       try {
-        const res = await fetch('http://localhost:3000/api/summary');
-        if (!res.ok) throw new Error('API request failed');
-        const data = await res.json();
-
+        const res = await apiClient('/api/summary');
+        if (!res) throw new Error('API request failed');
+        
         setStats({
-          users: data.totalCustomers || 0,
-          revenue: data.totalRevenue || 0,
-          orders: data.totalOrders || 0,
-          deliveryBoys: data.totalDeliveryBoys || 0,
+          users: res.totalCustomers || 0,
+          revenue: res.totalRevenue || 0,
+          orders: res.totalOrders || 0,
+          deliveryBoys: res.totalDeliveryBoys || 0,
         });
       } catch (err) {
         console.error('Failed to fetch summary:', err);

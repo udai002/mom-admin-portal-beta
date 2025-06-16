@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
+import apiClient from '../../utils/apiClient';
 
 function OrdersTable() {
   const [orders, setOrders] = useState([]);
@@ -11,10 +12,10 @@ function OrdersTable() {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/allorders');
-        const data = await response.json();
-        console.log("API response:", data);
-        setOrders(data.orders || []);
+        const response = await apiClient('/api/allorders');
+        
+        console.log("API response:", response);
+        setOrders(response.orders || []);
       } catch (error) {
         console.error("Error fetching orders:", error);
         setOrders([]);

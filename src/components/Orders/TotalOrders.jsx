@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { FaShoppingCart, FaRupeeSign, FaChartLine } from 'react-icons/fa';
 import OrdersLineChart from './OrdersLineChart'; // Adjust path as needed
+import apiClient from '../../utils/apiClient';
 
 const TotalOrders = () => {
   const [stats, setStats] = useState({
@@ -20,13 +21,12 @@ const TotalOrders = () => {
       const newStats = { orders: 0, revenue: 0, averageRevenue: 0 };
 
       try {
-        const res = await fetch('http://localhost:3000/api/summary');
-        const data = await res.json();
-
-        if (data.success) {
-          newStats.orders = data.totalOrders || 0;
-          newStats.revenue = data.totalRevenue || 0;
-          newStats.averageRevenue = data.averageRevenue || 0;
+        const res = await apiClient('/api/summary');
+        
+        if (res.success) {
+          newStats.orders = res.totalOrders || 0;
+          newStats.revenue = res.totalRevenue || 0;
+          newStats.averageRevenue = res.averageRevenue || 0;
         } else {
           setError('Failed to fetch summary');
         }

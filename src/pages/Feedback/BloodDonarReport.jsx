@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import SearchSymbol from '../../assets/Search.png';
+import apiClient from '../../utils/apiClient';
 
 function BloodDonarReport() {
   const [DonarDetails, setDonarDetails] = useState([]);
@@ -7,25 +8,18 @@ function BloodDonarReport() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
 
-  // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 15;
 
   useEffect(() => {
     const fetchDonarReports = async () => {
-      try {
-        const response = await fetch('http://localhost:3000/api/report/reports');
-        const data = await response.json();
-        let suggestions = Array.isArray(data) ? data : data.DonarDetails || [];
+      setLoading(true);
+      const data = await apiClient('/api/report/reports');
+      let suggestions = Array.isArray(data) ? data : data?.DonarDetails || [];
 
-        setDonarDetails(suggestions);
-        setFilteredDonarDetails(suggestions);
-      } catch (error) {
-        console.error("Error fetching donar details:", error);
-        setDonarDetails([]);
-      } finally {
-        setLoading(false);
-      }
+      setDonarDetails(suggestions);
+      setFilteredDonarDetails(suggestions);
+      setLoading(false);
     };
 
     fetchDonarReports();
@@ -54,10 +48,6 @@ function BloodDonarReport() {
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
   const currentItems = filteredDonarDetails.slice(indexOfFirstItem, indexOfLastItem);
   const totalPages = Math.ceil(filteredDonarDetails.length / itemsPerPage);
-
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
 
   return (
     <div className="min-h-screen bg-white p-6">
@@ -93,7 +83,13 @@ function BloodDonarReport() {
             </tr>
           </thead>
           <tbody>
-            {currentItems.length > 0 ? (
+            {loading ? (
+              <tr>
+                <td colSpan="8" className="px-4 py-6 text-center text-gray-500">
+                  Loading...
+                </td>
+              </tr>
+            ) : currentItems.length > 0 ? (
               currentItems.map((row, index) => (
                 <tr key={row._id} className="border-t border-[#BDE6E2] hover:bg-[#d5f4f1] transition">
                   <td className="px-4 py-3">{indexOfFirstItem + index + 1}</td>
@@ -101,19 +97,17 @@ function BloodDonarReport() {
                   <td className="px-4 py-3">{row.Donar?.email || 'N/A'}</td>
                   <td className="px-4 py-3">{row.Donar?.phone || 'N/A'}</td>
                   <td className="px-4 py-3">{row.Donar?.bloodGroup || 'N/A'}</td>
-                  <td className="px-4 py-3">{row.Donar?.availability === true ? 'Available' : 'Unavailable'}</td>
+                  <td className="px-4 py-3">{row.Donar?.availability ? 'Available' : 'Unavailable'}</td>
                   <td className="px-4 py-3">{row.Donar?.city || 'N/A'}</td>
                   <td className="px-4 py-3">{row.report || 'N/A'}</td>
                 </tr>
               ))
             ) : (
-              !loading && (
-                <tr>
-                  <td colSpan="8" className="px-4 py-6 text-center text-gray-500">
-                    No reports available.
-                  </td>
-                </tr>
-              )
+              <tr>
+                <td colSpan="8" className="px-4 py-6 text-center text-gray-500">
+                  No reports available.
+                </td>
+              </tr>
             )}
           </tbody>
         </table>
@@ -137,12 +131,11 @@ function BloodDonarReport() {
             </button>
           </div>
 
-          {/* Page Number Buttons */}
           <div className="flex flex-wrap gap-2">
             {[...Array(totalPages)].map((_, i) => (
               <button
                 key={i}
-                onClick={() => handlePageChange(i + 1)}
+                onClick={() => setCurrentPage(i + 1)}
                 className={`px-3 py-1 rounded-md ${
                   currentPage === i + 1 ? 'bg-[#00A99D] text-white' : 'bg-gray-200'
                 }`}

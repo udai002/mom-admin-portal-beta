@@ -5,6 +5,7 @@ import {
   FaTruck,
   FaRegDotCircle,
 } from 'react-icons/fa';
+import apiClient from '../../utils/apiClient';
 
 const BoxStyle = ({ title, value, borderColor = '#00A99D', icon: Icon }) => {
   return (
@@ -32,15 +33,15 @@ const TopBar = () => {
   useEffect(() => {
     const fetchStats = async () => {
       try {
-        const res = await fetch('http://localhost:3000/api/summary'); 
-        const data = await res.json();
+        const res = await apiClient('/api/summary'); 
+        
 
-        if (data.success) {
+        if (res.success) {
           setStats({
-            totalOrders: data.totalOrders,
-            activeOrders: data.activeOrders || 0,
-            customers: data.totalCustomers || 0,
-            totalDelivery: data.totalDelivery || 0,
+            totalOrders: res.totalOrders,
+            activeOrders: res.activeOrders || 0,
+            customers: res.totalCustomers || 0,
+            totalDelivery: res.totalDelivery || 0,
           });
         }
       } catch (error) {
