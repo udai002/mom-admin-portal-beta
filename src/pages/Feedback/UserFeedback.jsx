@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 import 'react-datepicker/dist/react-datepicker.css';
 import CalenderSymbol from '../../assets/calendar.png';
 import SearchSymbol from '../../assets/Search.png';
+import apiClient from '../../utils/apiClient';
 
 function UserFeedback() {
   const navigate = useNavigate();
@@ -19,9 +20,9 @@ function UserFeedback() {
   useEffect(() => {
     const fetchDetails = async () => {
       try {
-        const response = await fetch('http://localhost:3000/api/suggestions/sug');
-        const data = await response.json();
-        let suggestions = Array.isArray(data) ? data : data.Details || [];
+        const response = await apiClient('/api/suggestions/sug');
+        setDetails(response.data);
+        let suggestions = Array.isArray(response) ? response : response.Details || [];
 
         const resolvedIds = JSON.parse(localStorage.getItem('resolvedSuggestions')) || [];
         suggestions = suggestions.map(item => {

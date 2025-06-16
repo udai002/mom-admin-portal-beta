@@ -9,6 +9,7 @@ import {
   Legend,
   ResponsiveContainer
 } from 'recharts';
+import apiClient from '../../utils/apiClient';
 
 function OrdersLineChart() {
   const [filter, setFilter] = useState('monthly');
@@ -20,10 +21,10 @@ function OrdersLineChart() {
     setError('');
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:3000/api/orders-graph?filter=${filter}`);
-      const result = await res.json();
-      if (result.success) {
-        setChartData(result.data || []);
+      const res = await apiClient(`/api/orders-graph?filter=${filter}`);
+      
+      if (res.success) {
+        setChartData(res.data || []);
       } else {
         setError('Failed to fetch chart data');
       }
